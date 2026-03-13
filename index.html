@@ -11,24 +11,24 @@
 
 /* ══ THEME ══ */
 :root{
-  --bg:#07090e;--card:#0d1117;--card2:#131a23;
-  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.10);
-  --text:#e2eaf5;--muted:#3d4f63;--muted2:#5c7389;
+  --bg:#060a12;--card:#0b1120;--card2:#0f1829;
+  --b1:rgba(47,134,245,0.08);--b2:rgba(47,134,245,0.14);
+  --text:#e4eeff;--muted:#2a3d5a;--muted2:#4a6585;
   --green:#05d67a;--gg:rgba(5,214,122,0.13);
   --red:#f0415a;--rg:rgba(240,65,90,0.13);
-  --blue:#2f86f5;
+  --blue:#2f86f5;--blueg:rgba(47,134,245,0.13);
   --orange:#f07a2f;
   --font:'Familjen Grotesk',sans-serif;
   --mono:'JetBrains Mono',monospace;
   --radius:18px;
 }
 html[data-theme="light"]{
-  --bg:#f5f2ed;--card:#ffffff;--card2:#ede8e0;
-  --b1:rgba(0,0,0,0.06);--b2:rgba(0,0,0,0.10);
-  --text:#1a1612;--muted:#9a8f82;--muted2:#b0a090;
+  --bg:#f0f5ff;--card:#ffffff;--card2:#e8effe;
+  --b1:rgba(47,134,245,0.10);--b2:rgba(47,134,245,0.18);
+  --text:#0a1628;--muted:#7a9abf;--muted2:#5a7faa;
   --green:#0a9e5c;--gg:rgba(10,158,92,0.10);
   --red:#d63c52;--rg:rgba(214,60,82,0.10);
-  --blue:#2563eb;
+  --blue:#2563eb;--blueg:rgba(37,99,235,0.12);
   --orange:#ea6b0a;
 }
 
@@ -72,6 +72,27 @@ html[data-theme="light"] .bp.green{color:#fff}
 .fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--orange)}
 .fld input::placeholder,.fld textarea::placeholder{color:var(--muted)}
 .err{font-size:12px;color:var(--red);margin-top:6px;padding:8px 11px;background:var(--rg);border-radius:8px;border:1px solid rgba(240,65,90,.2);display:none}
+.ok-msg{font-size:12px;color:var(--green);margin-top:6px;padding:8px 11px;background:var(--gg);border-radius:8px;border:1px solid rgba(5,214,122,.2);display:none}
+
+/* ══ SWITCH BUTTON (top right corner) ══ */
+.switch-btn{position:fixed;top:62px;right:14px;z-index:999;display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted2);font-family:var(--font);box-shadow:0 2px 12px rgba(0,0,0,.2);transition:all .2s}
+.switch-btn:hover{border-color:var(--blue);color:var(--text)}
+.switch-btn .sw-ico{font-size:14px}
+html[data-theme="light"] .switch-btn{box-shadow:0 2px 8px rgba(0,0,0,.08)}
+
+/* ══ CONFIRM MODAL ══ */
+.modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal-box{background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:24px;width:100%;max-width:320px;text-align:center;transform:scale(.95);transition:transform .2s}
+.modal-overlay.show .modal-box{transform:scale(1)}
+.modal-ico{font-size:36px;margin-bottom:10px}
+.modal-ttl{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--muted2);margin-bottom:20px;line-height:1.5}
+.modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-cancel{background:var(--card2);border:1.5px solid var(--b2);border-radius:11px;padding:11px;color:var(--muted2);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
+.modal-confirm{background:var(--blue);border:none;border-radius:11px;padding:11px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.modal-confirm:hover{filter:brightness(1.1)}
+.modal-cancel:hover{border-color:var(--blue);color:var(--text)}
 
 /* ══ PAGE 1 — LANDING ══ */
 .theme-row{display:flex;justify-content:flex-end;margin-bottom:18px}
@@ -262,6 +283,24 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
 </head>
 <body>
 
+<!-- CONFIRM MODAL -->
+<div class="modal-overlay" id="switch-modal">
+  <div class="modal-box">
+    <div class="modal-ico">🔄</div>
+    <div class="modal-ttl">Go to Main Menu?</div>
+    <div class="modal-sub">You'll be taken back to the selection screen.</div>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeModal()">Stay Here</button>
+      <button class="modal-confirm" onclick="confirmSwitch()">Yes, Go Back</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING SWITCH BUTTON — shown on app & owner pages -->
+<div class="switch-btn" id="switch-btn" style="display:none" onclick="openModal()">
+  <span class="sw-ico">⇄</span> Switch
+</div>
+
 <!-- ══════════════════════
      PAGE 1 — LANDING
      Always shown first.
@@ -431,8 +470,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
      ══════════════════════ -->
 <div id="s-owner-view" class="scr">
   <div class="det-header">
-    <div class="det-back" onclick="ownerLogout()">←</div>
-    <div class="det-header-info">
+    <div class="det-header-info" style="padding-left:4px">
       <div class="det-header-name" id="ov-name">My Shop</div>
       <div class="det-header-sub" id="ov-sub">—</div>
     </div>
@@ -553,7 +591,6 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
       <div class="h-right">
         <div class="live-pill"><div class="ldot"></div><span id="h-open-count">—</span> Open</div>
         <div class="icon-btn" onclick="toggleTheme()" id="h-theme-btn">🌙</div>
-        <div class="icon-btn" onclick="showPage('s-land')">🏠</div>
       </div>
     </div>
     <div class="cat-tabs">
@@ -593,10 +630,10 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     </div>
   </div>
   <div class="bnav">
-    <button class="bn-item" onclick="showPage('s-land')"><div class="bn-ico">🏠</div>Main Menu</button>
-    <button class="bn-item on" onclick="setTab('home',this)"><div class="bn-ico">🗺️</div>All Shops</button>
-    <button class="bn-item" onclick="setTab('open',this)"><div class="bn-ico">🟢</div>Open Now</button>
-    <button class="bn-item" onclick="setTab('search',this)"><div class="bn-ico">🔍</div>Search</button>
+    <button class="bn-item on" onclick="setTab('home',this)"><div class="bn-ico">🗺️</div>All</button>
+    <button class="bn-item" onclick="setTab('open',this)"><div class="bn-ico">🟢</div>Online</button>
+    <button class="bn-item" onclick="setTab('discounts',this)"><div class="bn-ico">🏷️</div>Discounts</button>
+    <button class="bn-item" onclick="setTab('profile',this)"><div class="bn-ico">👤</div>Profile</button>
   </div>
 </div>
 
@@ -639,6 +676,27 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
       <div id="d-desc-text"></div>
     </div>
     <button class="dir-btn" id="det-dir">📍 &nbsp;Get Directions</button>
+  </div>
+</div>
+
+<!-- ══════════════════════
+     PROFILE PANEL (slide-in inside app page)
+     ══════════════════════ -->
+<div id="s-profile-panel" style="display:none;position:fixed;inset:0;z-index:300;background:var(--bg);overflow-y:auto;animation:rise .3s cubic-bezier(.2,1,.3,1) both">
+  <div style="padding:20px 20px 100px;max-width:480px;margin:0 auto">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-top:10px">
+      <div class="det-back" onclick="closeProfile()">←</div>
+      <div style="font-size:18px;font-weight:700">My Profile</div>
+    </div>
+    <div class="det-info-card" style="margin-bottom:14px">
+      <div class="dic-title">Your Info</div>
+      <div class="fld"><label>Your Name</label><input type="text" id="p-name" placeholder="e.g. Ahmed Khan" maxlength="40"></div>
+      <div class="fld"><label>Phone Number</label><input type="tel" id="p-phone" placeholder="03001234567" maxlength="11" style="font-family:var(--mono)"></div>
+      <div class="fld"><label>Location / Area</label><input type="text" id="p-location" placeholder="e.g. Saddar, Rawalpindi" maxlength="60"></div>
+    </div>
+    <div class="ok-msg" id="p-ok" style="display:none;margin-bottom:10px">✅ Profile saved!</div>
+    <button class="bp" style="background:var(--blue)" onclick="saveProfile()">Save Profile →</button>
+    <button class="bg" onclick="closeProfile()">← Back to Shops</button>
   </div>
 </div>
 
@@ -688,14 +746,17 @@ function showPage(id) {
   document.querySelectorAll('.scr, .scr-flex').forEach(el => el.classList.remove('on'));
   const target = G(id);
   target.style.animation = 'none';
-  target.offsetHeight; // force reflow to restart animation
+  target.offsetHeight;
   target.style.animation = '';
   target.classList.add('on');
   window.scrollTo(0, 0);
-  // Show sync bar only when inside the app pages
+  // Show sync bar only on app pages
   G('sync-bar').className = (id === 's-app' || id === 's-detail')
     ? G('sync-bar').className.includes('ok') ? 'sync show ok' : 'sync show'
     : 'sync';
+  // Show switch button on all pages EXCEPT landing
+  const hideSwitchOn = ['s-land'];
+  G('switch-btn').style.display = hideSwitchOn.includes(id) ? 'none' : 'flex';
 }
 
 // ── FIREBASE SYNC STATUS ──────────────────
@@ -910,21 +971,28 @@ G('det-back').addEventListener('click',()=>{
 function setTab(tab,el){
   document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('on'));
   el.classList.add('on');
-  if(tab==='home') selectCat('ALL',document.querySelector('.cat-tab[data-cat="ALL"]'));
-  else if(tab==='open'){
-    activeCat='ALL';searchQ='';G('search-inp').value='';
+  if(tab==='home'){
+    G('closed-section').style.display='';
+    selectCat('ALL',document.querySelector('.cat-tab[data-cat="ALL"]'));
+  } else if(tab==='open'){
+    activeCat='ALL'; searchQ=''; G('search-inp').value='';
     document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
     document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
     const e=Object.entries(allShops).filter(([,s])=>s.status==='Open');
-    G('open-label').textContent=`Open Now (${e.length})`;
-    G('open-list').innerHTML=e.length?e.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">😴</div><div class="empty-title">No shops open right now</div><div class="empty-sub">Check back soon</div></div>';
+    G('open-label').textContent=`Online Now (${e.length})`;
+    G('open-list').innerHTML=e.length?e.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">😴</div><div class="empty-title">No shops online right now</div><div class="empty-sub">Check back soon</div></div>';
     G('closed-section').style.display='none';
-  } else if(tab==='search'){
-    selectCat('ALL',document.querySelector('.cat-tab[data-cat="ALL"]'));
-    G('search-inp').focus();
+  } else if(tab==='discounts'){
+    activeCat='ALL'; searchQ=''; G('search-inp').value='';
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
+    document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
+    // Show shops that have a description (used as discount indicator) — or show all with a note
+    const all=Object.entries(allShops).filter(([,s])=>s.desc&&s.desc.trim().length>0);
+    G('open-label').textContent=`Shops with Offers (${all.length})`;
+    G('open-list').innerHTML=all.length?all.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">🏷️</div><div class="empty-title">No discount offers yet</div><div class="empty-sub">Shopkeepers can add offers in their description</div></div>';
+    G('closed-section').style.display='none';
   } else if(tab==='profile'){
-    const p=localStorage.getItem('userPhone');
-    alert(`Your Profile\n\nPhone: ${p?'0'+p.slice(2):'Not set'}\n\nTo update, clear site data and re-open the app.`);
+    openProfile();
   }
 }
 
@@ -1207,6 +1275,51 @@ function deleteImg(e, n) {
   e.stopPropagation();
   if(!confirm('Remove this photo?')) return;
   ownerRef.update({['img'+n]:''}).then(()=>{ renderSlot(n,''); });
+}
+
+// ── MODAL (switch/confirm) ───────────────
+function openModal(){ G('switch-modal').classList.add('show'); }
+function closeModal(){ G('switch-modal').classList.remove('show'); }
+function confirmSwitch(){
+  closeModal();
+  // If owner, log out session first
+  if(ownerKey){ if(ownerRef){ownerRef.off();ownerRef=null;} ownerKey=null; localStorage.removeItem('ownerPhone'); }
+  showPage('s-land');
+}
+G('switch-modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+// ── PROFILE ──────────────────────────────
+function openProfile(){
+  // Load saved values
+  G('p-name').value     = localStorage.getItem('profileName')    || '';
+  G('p-phone').value    = localStorage.getItem('profilePhone')   || (()=>{ const p=localStorage.getItem('userPhone'); return p?'0'+p.slice(2):''; })();
+  G('p-location').value = localStorage.getItem('profileLocation')|| '';
+  G('p-ok').style.display='none';
+  G('s-profile-panel').style.display='block';
+  window.scrollTo(0,0);
+}
+function closeProfile(){
+  G('s-profile-panel').style.display='none';
+  // Restore All tab active state
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('on'));
+  document.querySelector('.bn-item:first-child').classList.add('on');
+}
+function saveProfile(){
+  const name     = G('p-name').value.trim();
+  const phone    = G('p-phone').value.trim();
+  const location = G('p-location').value.trim();
+  localStorage.setItem('profileName',     name);
+  localStorage.setItem('profileLocation', location);
+  if(phone){
+    localStorage.setItem('profilePhone', phone);
+    if(/^03[0-9]{9}$/.test(phone)){
+      const key='92'+phone.slice(1);
+      localStorage.setItem('userPhone', key);
+      db.ref('users/'+key).set({ phone:key, displayPhone:phone, name, location, lastVisit:new Date().toISOString() });
+    }
+  }
+  G('p-ok').style.display='block';
+  setTimeout(()=>G('p-ok').style.display='none', 2500);
 }
 
 // ── AUTO RESTORE OWNER SESSION ──────────
