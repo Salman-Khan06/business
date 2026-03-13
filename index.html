@@ -42,6 +42,8 @@ html[data-theme="light"] body::after{display:none}
 */
 .scr{display:none}
 .scr.on{display:block;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
+/* detail/owner pages override display:block with their own flex rule above */
+
 .scr-flex{display:none}
 .scr-flex.on{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
@@ -119,7 +121,8 @@ html[data-theme="light"] .cc-reg:hover{border-color:rgba(37,99,235,.5)}
 .rs-txt{font-size:13px;color:var(--muted2);line-height:1.4}
 
 /* ══ PAGE 3 — MAIN APP ══ */
-#s-app{height:100vh;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+#s-app{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
+#s-app.on{display:flex}
 .header{background:var(--card);border-bottom:1px solid var(--b1);padding:14px 18px 0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.2);flex-shrink:0}
 html[data-theme="light"] .header{box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
@@ -196,14 +199,19 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 .bn-ico{font-size:20px;line-height:1}
 
 /* ══ PAGE 4 — DETAIL ══ */
-#s-detail{min-height:100vh;background:var(--bg)}
-.det-header{background:var(--card);border-bottom:1px solid var(--b1);padding:14px 16px;display:flex;align-items:center;gap:12px;position:sticky;top:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.2)}
+#s-detail{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
+#s-detail.on{display:flex;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
+#s-owner-view{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow-y:auto}
+#s-owner-view.on{display:flex;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
+#s-edit{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow-y:auto}
+#s-edit.on{display:flex;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
+.det-header{background:var(--card);border-bottom:1px solid var(--b1);padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;z-index:50;box-shadow:0 2px 14px rgba(0,0,0,.2)}
 .det-back{width:36px;height:36px;border-radius:11px;background:var(--card2);border:1px solid var(--b2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;font-size:16px;transition:all .2s}
 .det-back:hover{border-color:var(--orange)}
 .det-header-info{flex:1;min-width:0}
 .det-header-name{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .det-header-sub{font-size:11px;color:var(--muted2)}
-.det-body{padding:16px 16px 90px}
+.det-body{padding:16px 16px 90px;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .det-images{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;border-radius:16px;overflow:hidden}
 .det-img{aspect-ratio:1;background:var(--card2);overflow:hidden}
 .det-img img{width:100%;height:100%;object-fit:cover}
@@ -757,14 +765,11 @@ applyTheme(localStorage.getItem('theme') || 'dark');
 function showPage(id) {
   document.querySelectorAll('.scr, .scr-flex').forEach(el => el.classList.remove('on'));
   const target = G(id);
-  target.style.animation = 'none';
-  target.offsetHeight;
-  target.style.animation = '';
   target.classList.add('on');
-  window.scrollTo(0, 0);
-  // Show sync bar only on app pages
-
-  // Switch button lives in app header — only visible on s-app page
+  // Scroll inner scrollable area back to top
+  const scrollable = target.querySelector('.content, .det-body');
+  if (scrollable) scrollable.scrollTop = 0;
+  // Switch button only visible in app header (s-app)
   const showSwitchOn = ['s-app'];
   G('switch-btn').style.display = showSwitchOn.includes(id) ? 'flex' : 'none';
 }
