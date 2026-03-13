@@ -8,8 +8,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-
-/* ══ THEME ══ */
 :root{
   --bg:#060a12;--card:#0b1120;--card2:#0f1829;
   --b1:rgba(47,134,245,0.08);--b2:rgba(47,134,245,0.14);
@@ -17,7 +15,7 @@
   --green:#05d67a;--gg:rgba(5,214,122,0.13);
   --red:#f0415a;--rg:rgba(240,65,90,0.13);
   --blue:#2f86f5;--blueg:rgba(47,134,245,0.13);
-  --orange:#f07a2f;
+  --orange:#f07a2f;--gold:#f0b829;
   --font:'Familjen Grotesk',sans-serif;
   --mono:'JetBrains Mono',monospace;
   --radius:18px;
@@ -29,26 +27,14 @@ html[data-theme="light"]{
   --green:#0a9e5c;--gg:rgba(10,158,92,0.10);
   --red:#d63c52;--rg:rgba(214,60,82,0.10);
   --blue:#2563eb;--blueg:rgba(37,99,235,0.12);
-  --orange:#ea6b0a;
+  --orange:#ea6b0a;--gold:#c8900a;
 }
-
 html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;transition:background .25s,color .25s;overscroll-behavior:none}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")}
 html[data-theme="light"] body::after{display:none}
-
-/* ══ SCREEN SYSTEM ══
-   All screens hidden. .on makes them visible.
-   .scr = block layout   .scr-flex = flex layout
-*/
-.scr{display:none}
-.scr.on{display:block;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
-/* detail/owner pages override display:block with their own flex rule above */
-
-.scr-flex{display:none}
-.scr-flex.on{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
+.scr{display:none}.scr.on{display:block;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
+.scr-flex{display:none}.scr-flex.on{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
 @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* ══ SHARED ══ */
 .page-pad{padding:32px 20px 60px;position:relative;z-index:1;width:100%}
 .wrap{width:100%;max-width:400px;margin:0 auto}
 .card{background:var(--card);border:1px solid var(--b2);border-radius:24px;padding:28px 24px;box-shadow:0 0 0 1px rgba(255,255,255,.02),0 20px 60px rgba(0,0,0,.5)}
@@ -59,8 +45,7 @@ html[data-theme="light"] .card{box-shadow:0 4px 40px rgba(0,0,0,.09)}
 .ttl{font-size:22px;font-weight:700;line-height:1.2;margin-bottom:6px}
 .sub{font-size:13px;color:var(--muted2);margin-bottom:22px;line-height:1.5}
 .bp{display:block;width:100%;border:none;border-radius:12px;padding:13px;color:#fff;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;margin-top:10px;background:var(--blue)}
-.bp:hover{filter:brightness(1.12);transform:translateY(-1px)}
-.bp:active{transform:scale(.97)}
+.bp:hover{filter:brightness(1.12);transform:translateY(-1px)}.bp:active{transform:scale(.97)}
 .bp.green{background:var(--green);color:#07090e}
 html[data-theme="light"] .bp.green{color:#fff}
 .bp.orange{background:var(--orange)}
@@ -75,27 +60,52 @@ html[data-theme="light"] .bp.green{color:#fff}
 .fld input::placeholder,.fld textarea::placeholder{color:var(--muted)}
 .err{font-size:12px;color:var(--red);margin-top:6px;padding:8px 11px;background:var(--rg);border-radius:8px;border:1px solid rgba(240,65,90,.2);display:none}
 .ok-msg{font-size:12px;color:var(--green);margin-top:6px;padding:8px 11px;background:var(--gg);border-radius:8px;border:1px solid rgba(5,214,122,.2);display:none}
-
-/* ══ SWITCH BUTTON (top right corner) ══ */
 .switch-btn{display:none;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--b2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted2);font-family:var(--font);transition:all .2s}
 .switch-btn:hover{border-color:var(--blue);color:var(--text)}
 .switch-btn .sw-ico{font-size:14px}
+
+/* ══ GEO-FENCE ALERT MODAL ══ */
+#geo-modal{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.65);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity .25s}
+#geo-modal.show{opacity:1;pointer-events:all}
+#geo-modal .gm-box{background:var(--card);border:1.5px solid rgba(240,184,41,0.4);border-radius:22px;padding:28px 22px;width:100%;max-width:320px;text-align:center;transform:scale(.9) translateY(24px);transition:transform .3s cubic-bezier(.2,1,.3,1)}
+#geo-modal.show .gm-box{transform:scale(1) translateY(0)}
+.gm-pulse{font-size:48px;margin-bottom:12px;animation:gmPulse 2s ease-in-out infinite}
+@keyframes gmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+.gm-ttl{font-size:18px;font-weight:800;color:var(--gold);margin-bottom:6px}
+.gm-sub{font-size:13px;color:var(--muted2);line-height:1.6;margin-bottom:8px}
+.gm-dist{font-family:var(--mono);font-size:12px;background:var(--card2);border:1px solid var(--b2);border-radius:8px;padding:6px 14px;display:inline-block;margin-bottom:20px;color:var(--muted2)}
+.gm-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gm-close-btn{background:rgba(240,65,90,0.15);border:1.5px solid rgba(240,65,90,0.4);border-radius:12px;padding:13px;color:var(--red);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.gm-open-btn{background:rgba(5,214,122,0.12);border:1.5px solid rgba(5,214,122,0.3);border-radius:12px;padding:13px;color:var(--green);font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
+.gm-close-btn:hover{background:rgba(240,65,90,0.28)}
+.gm-open-btn:hover{background:rgba(5,214,122,0.24)}
+
+/* ══ GEO STATUS BAR ══ */
+#geo-status-bar{display:none;margin-bottom:12px;padding:9px 14px;background:var(--card2);border:1px solid var(--b1);border-radius:11px;font-size:11px;color:var(--muted2);font-family:var(--mono);text-align:center;transition:all .3s}
+#geo-status-bar.tracking{border-color:rgba(47,134,245,0.3);color:var(--blue)}
+#geo-status-bar.far{border-color:rgba(240,184,41,0.35);color:var(--gold)}
+#geo-status-bar.denied{border-color:rgba(240,65,90,0.25);color:var(--red)}
+
+/* ══ LOCATION CAPTURE BUTTON ══ */
+.loc-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:1.5px dashed var(--b2);border-radius:11px;padding:12px 13px;background:var(--card2);color:var(--muted2);font-family:var(--font);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.loc-btn:hover{border-color:var(--blue);color:var(--text)}
+.loc-btn.saved{border-style:solid;border-color:rgba(5,214,122,0.5);color:var(--green)}
+.loc-btn.loading{border-color:var(--orange);color:var(--orange);cursor:wait}
+.loc-status{font-size:11px;margin-top:5px;text-align:center;color:var(--muted2);display:none}
 
 /* ══ CONFIRM MODAL ══ */
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
 .modal-overlay.show{opacity:1;pointer-events:all}
 .modal-box{background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:24px;width:100%;max-width:320px;text-align:center;transform:scale(.95);transition:transform .2s}
 .modal-overlay.show .modal-box{transform:scale(1)}
-.modal-ico{font-size:36px;margin-bottom:10px}
-.modal-ttl{font-size:17px;font-weight:700;margin-bottom:6px}
+.modal-ico{font-size:36px;margin-bottom:10px}.modal-ttl{font-size:17px;font-weight:700;margin-bottom:6px}
 .modal-sub{font-size:13px;color:var(--muted2);margin-bottom:20px;line-height:1.5}
 .modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .modal-cancel{background:var(--card2);border:1.5px solid var(--b2);border-radius:11px;padding:11px;color:var(--muted2);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:all .2s}
 .modal-confirm{background:var(--blue);border:none;border-radius:11px;padding:11px;color:#fff;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;transition:all .2s}
-.modal-confirm:hover{filter:brightness(1.1)}
-.modal-cancel:hover{border-color:var(--blue);color:var(--text)}
+.modal-confirm:hover{filter:brightness(1.1)}.modal-cancel:hover{border-color:var(--blue);color:var(--text)}
 
-/* ══ PAGE 1 — LANDING ══ */
+/* ══ LANDING ══ */
 .theme-row{display:flex;justify-content:flex-end;margin-bottom:18px}
 .theme-btn{display:inline-flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--b2);border-radius:20px;padding:6px 14px 6px 10px;cursor:pointer;transition:all .2s;font-size:12px;font-weight:600;color:var(--muted2);font-family:var(--font)}
 .theme-btn:hover{border-color:var(--orange);color:var(--text)}
@@ -107,20 +117,12 @@ html[data-theme="light"] .bp.green{color:#fff}
 .cc-reg:hover{border-color:rgba(47,134,245,.5);box-shadow:0 6px 24px rgba(47,134,245,.12)}
 html[data-theme="light"] .cc-find:hover{border-color:rgba(10,158,92,.5)}
 html[data-theme="light"] .cc-reg:hover{border-color:rgba(37,99,235,.5)}
-.cc-ico{font-size:32px}
-.cc-lbl{font-size:14px;font-weight:700;color:var(--text)}
+.cc-ico{font-size:32px}.cc-lbl{font-size:14px;font-weight:700;color:var(--text)}
 .cc-sub{font-size:11px;color:var(--muted2);line-height:1.4}
 .cc-arrow-g{font-size:12px;font-weight:700;color:var(--green)}
 .cc-arrow-b{font-size:12px;font-weight:700;color:var(--blue)}
 
-/* ══ PAGE 2b — REGISTER ══ */
-.reg-steps{background:var(--card2);border:1px solid var(--b1);border-radius:14px;padding:14px;margin-bottom:16px}
-.reg-step{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--b1)}
-.reg-step:last-child{border-bottom:none}
-.rs-num{width:22px;height:22px;border-radius:50%;background:var(--blue);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.rs-txt{font-size:13px;color:var(--muted2);line-height:1.4}
-
-/* ══ PAGE 3 — MAIN APP ══ */
+/* ══ MAIN APP ══ */
 #s-app{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
 #s-app.on{display:flex}
 .header{background:var(--card);border-bottom:1px solid var(--b1);padding:14px 18px 0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.2);flex-shrink:0}
@@ -143,14 +145,7 @@ html[data-theme="light"] .header{box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .ct-count{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);border-radius:10px;padding:1px 5px;display:none}
 html[data-theme="light"] .cat-tab.on .ct-count{background:rgba(0,0,0,.12)}
 .cat-tab.on .ct-count{display:inline}
-.content{padding:16px 16px 16px;position:relative;z-index:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
-.stats-bar{display:flex;gap:10px;margin-bottom:16px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
-.stats-bar::-webkit-scrollbar{display:none}
-.stat-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--b1);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
-.stat-chip .sc-n{font-family:var(--mono);font-size:14px;font-weight:700}
-.stat-chip.g .sc-n{color:var(--green)}
-.stat-chip.r .sc-n{color:var(--red)}
-.stat-chip.b .sc-n{color:var(--blue)}
+.content{padding:16px;position:relative;z-index:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .search-wrap{position:relative;margin-bottom:16px}
 .search-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
 .search-inp{width:100%;background:var(--card);border:1.5px solid var(--b1);border-radius:13px;padding:11px 13px 11px 40px;color:var(--text);font-family:var(--font);font-size:14px;outline:none;transition:all .2s}
@@ -163,8 +158,7 @@ html[data-theme="light"] .cat-tab.on .ct-count{background:rgba(0,0,0,.12)}
 .shop-list{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}
 .shop-card{background:var(--card);border-radius:var(--radius);border:1.5px solid var(--b1);overflow:hidden;cursor:pointer;transition:all .22s}
 .shop-card:hover{border-color:var(--orange);box-shadow:0 6px 28px rgba(0,0,0,.25);transform:translateY(-1px)}
-.shop-card:active{transform:scale(.99)}
-.shop-card.offline{opacity:.7}
+.shop-card:active{transform:scale(.99)}.shop-card.offline{opacity:.7}
 .sc-strip{height:3px;background:linear-gradient(90deg,var(--green),rgba(5,214,122,.15))}
 .shop-card.offline .sc-strip{background:var(--b1)}
 .sc-inner{display:flex;align-items:stretch}
@@ -184,8 +178,7 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 .sc-foot{display:flex;align-items:center;justify-content:space-between;gap:6px}
 .sc-area{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sc-time{font-family:var(--mono);font-size:10px;color:var(--muted2);white-space:nowrap;flex-shrink:0}
-.sc-time.open-time{color:var(--green);font-weight:600}
-.sc-time.closed-time{color:var(--red)}
+.sc-time.open-time{color:var(--green);font-weight:600}.sc-time.closed-time{color:var(--red)}
 .empty-state{text-align:center;padding:48px 24px;color:var(--muted2)}
 .empty-ico{font-size:44px;margin-bottom:12px}
 .empty-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:6px}
@@ -194,11 +187,10 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .bnav{flex-shrink:0;background:var(--card);border-top:1px solid var(--b2);padding:8px 0 max(8px,env(safe-area-inset-bottom));display:flex;box-shadow:0 -4px 16px rgba(0,0,0,.2);z-index:50}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px;font-size:10px;font-weight:600;color:var(--muted2);border:none;background:none;font-family:var(--font);transition:color .2s}
-.bn-item:hover{color:var(--text)}
-.bn-item.on{color:var(--orange)}
+.bn-item:hover{color:var(--text)}.bn-item.on{color:var(--orange)}
 .bn-ico{font-size:20px;line-height:1}
 
-/* ══ PAGE 4 — DETAIL ══ */
+/* ══ DETAIL / OWNER / EDIT PAGES ══ */
 #s-detail{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow:hidden}
 #s-detail.on{display:flex;animation:rise .35s cubic-bezier(.2,1,.3,1) both}
 #s-owner-view{height:100vh;height:100dvh;background:var(--bg);display:none;flex-direction:column;overflow-y:auto}
@@ -217,8 +209,7 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 .det-img img{width:100%;height:100%;object-fit:cover}
 .det-img-empty{width:100%;height:100%;min-height:120px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;color:var(--muted2);font-size:28px}
 .det-img-empty span{font-size:11px}
-.det-img:first-child{border-radius:16px 0 0 16px}
-.det-img:last-child{border-radius:0 16px 16px 0}
+.det-img:first-child{border-radius:16px 0 0 16px}.det-img:last-child{border-radius:0 16px 16px 0}
 .det-single .det-img{border-radius:16px!important}
 .det-status-hero{border-radius:16px;padding:18px;margin-bottom:14px;display:flex;align-items:center;gap:14px}
 .det-status-hero.open{background:var(--gg);border:1px solid rgba(5,214,122,.22)}
@@ -226,18 +217,14 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 .det-status-hero.unknown{background:var(--card2);border:1px solid var(--b1)}
 html[data-theme="light"] .det-status-hero.open{background:rgba(10,158,92,.1);border-color:rgba(10,158,92,.2)}
 html[data-theme="light"] .det-status-hero.closed{background:rgba(214,60,82,.09);border-color:rgba(214,60,82,.15)}
-.dsh-ico{font-size:36px}
-.dsh-status{font-size:18px;font-weight:800;margin-bottom:2px}
-.open .dsh-status{color:var(--green)}
-.closed .dsh-status{color:var(--red)}
-.unknown .dsh-status{color:var(--muted2)}
+.dsh-ico{font-size:36px}.dsh-status{font-size:18px;font-weight:800;margin-bottom:2px}
+.open .dsh-status{color:var(--green)}.closed .dsh-status{color:var(--red)}.unknown .dsh-status{color:var(--muted2)}
 .dsh-since{font-size:12px;color:var(--muted2);font-family:var(--mono)}
 .times-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
 .tg-box{background:var(--card);border:1px solid var(--b1);border-radius:13px;padding:12px}
 .tgb-lbl{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted2);margin-bottom:4px}
 .tgb-val{font-family:var(--mono);font-size:18px;font-weight:500}
-.tg-open .tgb-val{color:var(--green)}
-.tg-close .tgb-val{color:var(--red)}
+.tg-open .tgb-val{color:var(--green)}.tg-close .tgb-val{color:var(--red)}
 .det-info-card{background:var(--card);border:1px solid var(--b1);border-radius:16px;padding:16px;margin-bottom:12px}
 .dic-title{font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted2);margin-bottom:12px}
 .irow{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--b1)}
@@ -250,12 +237,9 @@ html[data-theme="light"] .det-status-hero.closed{background:rgba(214,60,82,.09);
 .det-desc-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted2);margin-bottom:6px}
 .dir-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:var(--text);border:none;border-radius:14px;padding:14px;color:var(--bg);font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;margin-bottom:10px}
 .dir-btn:hover{opacity:.85}
-
-/* ── IMAGE UPLOAD SLOTS ── */
 .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px}
 .img-slot{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--card2);border:1.5px dashed var(--b2);cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;transition:border-color .2s}
-.img-slot:hover{border-color:var(--orange)}
-.img-slot.has-img{border-style:solid;border-color:var(--b2)}
+.img-slot:hover{border-color:var(--orange)}.img-slot.has-img{border-style:solid;border-color:var(--b2)}
 .img-slot img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .img-slot-ico{font-size:24px;position:relative;z-index:1}
 .img-slot-lbl{font-size:11px;color:var(--muted2);font-weight:600;position:relative;z-index:1}
@@ -267,8 +251,6 @@ html[data-theme="light"] .det-status-hero.closed{background:rgba(214,60,82,.09);
 .up-prog{height:3px;border-radius:2px;background:var(--b1);margin-bottom:6px;overflow:hidden;display:none}
 .up-bar{height:100%;background:var(--orange);width:0%;transition:width .3s;border-radius:2px}
 .img-note{font-size:11px;color:var(--muted);text-align:center;margin-bottom:12px}
-
-/* ── OWNER OPEN/CLOSE BUTTONS ── */
 .ov-btn{padding:16px 10px;border-radius:14px;border:1.5px solid var(--b2);background:var(--card2);color:var(--muted2);font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all .25s;display:flex;flex-direction:column;align-items:center;gap:5px;width:100%}
 .ov-btn span{font-size:22px}
 .bo:not(.a):hover{border-color:rgba(5,214,122,.4);color:rgba(5,214,122,.8)}
@@ -278,19 +260,25 @@ html[data-theme="light"] .det-status-hero.closed{background:rgba(214,60,82,.09);
 html[data-theme="light"] .bo.a{background:rgba(10,158,92,.12);border-color:rgba(10,158,92,.4);color:var(--green)}
 html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(214,60,82,.4);color:var(--red)}
 .ov-btn:active{transform:scale(.96)}
-
-/* sync bar */
-.sync{position:fixed;bottom:56px;left:0;right:0;z-index:59;padding:5px 14px;font-family:var(--mono);font-size:10px;display:none;align-items:center;gap:7px;background:var(--card2);border-top:1px solid var(--b2)}
-.sync.show{display:flex}
-.sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:all .3s}
-.sync.ok .sync-dot{background:var(--green);box-shadow:0 0 6px var(--green)}
-.sync.err .sync-dot{background:var(--red)}
-.sync-msg{color:var(--muted2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 </head>
 <body>
 
-<!-- CONFIRM MODAL -->
+<!-- GEO-FENCE ALERT MODAL -->
+<div id="geo-modal">
+  <div class="gm-box">
+    <div class="gm-pulse">📍</div>
+    <div class="gm-ttl">Kya aap ne dukaan band ki?</div>
+    <div class="gm-sub">Aap apni dukaan se kaafi door ho gaye hain. Kya aap ne close kar diya?</div>
+    <div class="gm-dist" id="gm-dist-txt">calculating…</div>
+    <div class="gm-btns">
+      <button class="gm-close-btn" onclick="geoConfirmClose()">🔴 Haan, Band Kar Do</button>
+      <button class="gm-open-btn" onclick="geoStillOpen()">🟢 Abhi Khuli Hai</button>
+    </div>
+  </div>
+</div>
+
+<!-- SWITCH CONFIRM MODAL -->
 <div class="modal-overlay" id="switch-modal">
   <div class="modal-box">
     <div class="modal-ico">🔄</div>
@@ -303,174 +291,124 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-<!-- ══════════════════════
-     PAGE 1 — LANDING
-     Always shown first.
-     ══════════════════════ -->
+<!-- PAGE 1 — LANDING -->
 <div id="s-land" class="scr-flex on">
-  <div class="page-pad">
-    <div class="wrap">
-      <div class="theme-row">
-        <button class="theme-btn" onclick="toggleTheme()">
-          <span id="theme-ico">🌙</span>&nbsp;<span id="theme-lbl">Dark Mode</span>
-        </button>
-      </div>
-      <div class="card">
-        <div class="bar">
-          <div class="logo">ShopStatus</div>
-          <div class="pill">v4.0</div>
+  <div class="page-pad"><div class="wrap">
+    <div class="theme-row">
+      <button class="theme-btn" onclick="toggleTheme()"><span id="theme-ico">🌙</span>&nbsp;<span id="theme-lbl">Dark Mode</span></button>
+    </div>
+    <div class="card">
+      <div class="bar"><div class="logo">ShopStatus</div><div class="pill">v4.1</div></div>
+      <div class="land-icon">🏪</div>
+      <div class="ttl">Apki Dukaan,<br>Hamesha Live 🛒</div>
+      <div class="sub">Real-time status of local shops. Know before you go — or manage your own shop.</div>
+      <div class="choice-grid">
+        <div class="choice-card cc-find" onclick="goFindShops()">
+          <div class="cc-ico">🔍</div><div class="cc-lbl">Find Shops</div>
+          <div class="cc-sub">Check if a shop is open right now</div>
+          <div class="cc-arrow-g">Browse →</div>
         </div>
-        <div class="land-icon">🏪</div>
-        <div class="ttl">Apki Dukaan,<br>Hamesha Live 🛒</div>
-        <div class="sub">Real-time status of local shops. Know before you go — or manage your own shop.</div>
-        <div class="choice-grid">
-          <div class="choice-card cc-find" onclick="goFindShops()">
-            <div class="cc-ico">🔍</div>
-            <div class="cc-lbl">Find Shops</div>
-            <div class="cc-sub">Check if a shop is open right now</div>
-            <div class="cc-arrow-g">Browse →</div>
-          </div>
-          <div class="choice-card cc-reg" onclick="goMyShop()">
-            <div class="cc-ico">🏪</div>
-            <div class="cc-lbl">My Shop</div>
-            <div class="cc-sub">Owner? Register &amp; manage your dukaan</div>
-            <div class="cc-arrow-b">Start →</div>
-          </div>
+        <div class="choice-card cc-reg" onclick="goMyShop()">
+          <div class="cc-ico">🏪</div><div class="cc-lbl">My Shop</div>
+          <div class="cc-sub">Owner? Register &amp; manage your dukaan</div>
+          <div class="cc-arrow-b">Start →</div>
         </div>
       </div>
     </div>
-  </div>
+  </div></div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 2a — PHONE ENTRY
-     ══════════════════════ -->
+<!-- PAGE 2a — PHONE ENTRY -->
 <div id="s-phone" class="scr-flex">
-  <div class="page-pad">
-    <div class="wrap">
-      <div class="card">
-        <div class="bar">
-          <div class="logo">ShopStatus</div>
-          <div class="pill">Find Shops</div>
-        </div>
-        <div class="ttl">Enter Your Number</div>
-        <div class="sub">Optional — used for tracking only. Never shown publicly.</div>
-        <div class="fld">
-          <label>Phone Number</label>
-          <input type="tel" id="ob-phone" placeholder="03001234567" maxlength="11"
-            style="font-family:var(--mono);font-size:20px;letter-spacing:2px;text-align:center">
-          <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">Your number stays private &amp; secure.</div>
-          <div class="err" id="ob-err">⚠️ Enter a valid number (03XXXXXXXXX)</div>
-        </div>
-        <button class="bp orange" id="ob-continue">Continue →</button>
-        <div style="font-size:12px;color:var(--muted2);text-align:center;margin-top:12px;cursor:pointer;text-decoration:underline;text-underline-offset:2px" id="ob-skip">Browse without entering number</div>
-        <button class="bg" onclick="showPage('s-land')">← Back</button>
-      </div>
+  <div class="page-pad"><div class="wrap"><div class="card">
+    <div class="bar"><div class="logo">ShopStatus</div><div class="pill">Find Shops</div></div>
+    <div class="ttl">Enter Your Number</div>
+    <div class="sub">Optional — used for tracking only. Never shown publicly.</div>
+    <div class="fld">
+      <label>Phone Number</label>
+      <input type="tel" id="ob-phone" placeholder="03001234567" maxlength="11" style="font-family:var(--mono);font-size:20px;letter-spacing:2px;text-align:center">
+      <div style="font-size:11px;color:var(--muted);text-align:center;margin-top:6px">Your number stays private &amp; secure.</div>
+      <div class="err" id="ob-err">Enter a valid number (03XXXXXXXXX)</div>
     </div>
-  </div>
+    <button class="bp orange" id="ob-continue">Continue →</button>
+    <div style="font-size:12px;color:var(--muted2);text-align:center;margin-top:12px;cursor:pointer;text-decoration:underline;text-underline-offset:2px" id="ob-skip">Browse without entering number</div>
+    <button class="bg" onclick="showPage('s-land')">← Back</button>
+  </div></div></div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 2b — MY SHOP (owner landing)
-     ══════════════════════ -->
+<!-- PAGE 2b — MY SHOP (owner landing) -->
 <div id="s-register" class="scr-flex">
-  <div class="page-pad">
-    <div class="wrap">
-      <div class="card">
-        <div class="bar">
-          <div class="logo">ShopStatus</div>
-          <div class="pill">Owner</div>
-        </div>
-        <div style="font-size:48px;text-align:center;margin-bottom:14px">🏪</div>
-        <div class="ttl">Apni Dukaan<br>Manage Karein</div>
-        <div class="sub">Register your shop once, then customers will always know if you are open or closed.</div>
-        <button class="bp orange" onclick="showPage('s-do-register')">➕ &nbsp;Register New Shop</button>
-        <div class="divider">already registered?</div>
-        <button class="bg" onclick="showPage('s-owner-login')">📞 &nbsp;Login with Phone Number</button>
-        <button class="bg" onclick="showPage('s-land')">← Back</button>
-      </div>
-    </div>
-  </div>
+  <div class="page-pad"><div class="wrap"><div class="card">
+    <div class="bar"><div class="logo">ShopStatus</div><div class="pill">Owner</div></div>
+    <div style="font-size:48px;text-align:center;margin-bottom:14px">🏪</div>
+    <div class="ttl">Apni Dukaan<br>Manage Karein</div>
+    <div class="sub">Register your shop once, then customers will always know if you are open or closed.</div>
+    <button class="bp orange" onclick="showPage('s-do-register')">➕ &nbsp;Register New Shop</button>
+    <div class="divider">already registered?</div>
+    <button class="bg" onclick="showPage('s-owner-login')">📞 &nbsp;Login with Phone Number</button>
+    <button class="bg" onclick="showPage('s-land')">← Back</button>
+  </div></div></div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 2c — OWNER LOGIN
-     ══════════════════════ -->
+<!-- PAGE 2c — OWNER LOGIN -->
 <div id="s-owner-login" class="scr-flex">
-  <div class="page-pad">
-    <div class="wrap">
-      <div class="card">
-        <div class="bar">
-          <div class="logo">ShopStatus</div>
-          <div class="pill">Owner Login</div>
-        </div>
-        <div class="ttl">Enter Your Number</div>
-        <div class="sub">Type your registered phone number to view your shop info.</div>
-        <div class="fld">
-          <label>Phone Number</label>
-          <input type="tel" id="ol-phone" placeholder="03001234567" maxlength="11"
-            style="font-family:var(--mono);font-size:20px;letter-spacing:2px;text-align:center">
-          <div class="err" id="ol-err">⚠️ No shop found with this number.</div>
-        </div>
-        <button class="bp orange" id="ol-btn">Open My Shop →</button>
-        <button class="bg" onclick="showPage('s-register')">← Back</button>
-      </div>
+  <div class="page-pad"><div class="wrap"><div class="card">
+    <div class="bar"><div class="logo">ShopStatus</div><div class="pill">Owner Login</div></div>
+    <div class="ttl">Enter Your Number</div>
+    <div class="sub">Type your registered phone number to view your shop info.</div>
+    <div class="fld">
+      <label>Phone Number</label>
+      <input type="tel" id="ol-phone" placeholder="03001234567" maxlength="11" style="font-family:var(--mono);font-size:20px;letter-spacing:2px;text-align:center">
+      <div class="err" id="ol-err">No shop found with this number.</div>
     </div>
-  </div>
+    <button class="bp orange" id="ol-btn">Open My Shop →</button>
+    <button class="bg" onclick="showPage('s-register')">← Back</button>
+  </div></div></div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 2d — REGISTER FORM
-     ══════════════════════ -->
+<!-- PAGE 2d — REGISTER FORM -->
 <div id="s-do-register" class="scr-flex">
-  <div class="page-pad">
-    <div class="wrap">
-      <div class="card">
-        <div class="bar">
-          <div class="logo">ShopStatus</div>
-          <div class="pill">Register</div>
-        </div>
-        <div class="ttl">Register Your Shop</div>
-        <div class="sub">Your phone number is your login — no password needed.</div>
-        <div class="fld"><label>Shop Name</label><input type="text" id="r-name" placeholder="e.g. Ali General Store" maxlength="50"></div>
-        <div class="fld"><label>Owner Name</label><input type="text" id="r-owner" placeholder="e.g. Muhammad Ali" maxlength="40"></div>
-        <div class="fld"><label>Phone Number</label><input type="tel" id="r-phone" placeholder="03001234567" maxlength="11"></div>
-        <div class="fld"><label>Category</label>
-          <select id="r-cat">
-            <option value="">— Select —</option>
-            <option value="GR">🛒 Grocery / General Store</option>
-            <option value="MD">💊 Medical / Pharmacy</option>
-            <option value="FD">🍽️ Food / Dhaba / Restaurant</option>
-            <option value="EL">📱 Electronics / Mobile</option>
-            <option value="CL">👕 Clothing / Kapra</option>
-            <option value="HW">🔧 Hardware / Tools</option>
-            <option value="BK">🍞 Bakery</option>
-            <option value="OT">🏪 Other</option>
-          </select>
-        </div>
-        <div class="fld"><label>Area / Mohalla</label><input type="text" id="r-area" placeholder="e.g. Raja Bazaar" maxlength="60"></div>
-        <div class="fld"><label>City</label><input type="text" id="r-city" placeholder="e.g. Rawalpindi" maxlength="30"></div>
-        <div class="fld"><label>Description (Optional)</label><textarea id="r-desc" rows="2" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
-        <div class="fld"><label>🏷️ Discount / Offer (Optional)</label><input type="text" id="r-discount" placeholder="e.g. 10% off on Fridays, Free delivery above Rs.500" maxlength="150"></div>
-        <div class="err" id="r-err">⚠️ Please fill all required fields.</div>
-        <div class="err" id="r-phone-err">⚠️ Enter a valid number (03XXXXXXXXX).</div>
-        <div class="err" id="r-dup-err">⚠️ Number already registered — use "Already Registered" login instead.</div>
-        <div class="ok-msg" id="r-ok">✅ Shop registered successfully!</div>
-        <button class="bp orange" id="r-btn">Register My Shop →</button>
-        <button class="bg" onclick="showPage('s-register')">← Back</button>
-      </div>
+  <div class="page-pad"><div class="wrap"><div class="card">
+    <div class="bar"><div class="logo">ShopStatus</div><div class="pill">Register</div></div>
+    <div class="ttl">Register Your Shop</div>
+    <div class="sub">Your phone number is your login — no password needed.</div>
+    <div class="fld"><label>Shop Name</label><input type="text" id="r-name" placeholder="e.g. Ali General Store" maxlength="50"></div>
+    <div class="fld"><label>Owner Name</label><input type="text" id="r-owner" placeholder="e.g. Muhammad Ali" maxlength="40"></div>
+    <div class="fld"><label>Phone Number</label><input type="tel" id="r-phone" placeholder="03001234567" maxlength="11"></div>
+    <div class="fld"><label>Category</label>
+      <select id="r-cat">
+        <option value="">— Select —</option>
+        <option value="GR">🛒 Grocery / General Store</option>
+        <option value="MD">💊 Medical / Pharmacy</option>
+        <option value="FD">🍽️ Food / Dhaba / Restaurant</option>
+        <option value="EL">📱 Electronics / Mobile</option>
+        <option value="CL">👕 Clothing / Kapra</option>
+        <option value="HW">🔧 Hardware / Tools</option>
+        <option value="BK">🍞 Bakery</option>
+        <option value="OT">🏪 Other</option>
+      </select>
     </div>
-  </div>
+    <div class="fld"><label>Area / Mohalla</label><input type="text" id="r-area" placeholder="e.g. Raja Bazaar" maxlength="60"></div>
+    <div class="fld"><label>City</label><input type="text" id="r-city" placeholder="e.g. Rawalpindi" maxlength="30"></div>
+    <div class="fld"><label>Description (Optional)</label><textarea id="r-desc" rows="2" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
+    <div class="fld"><label>🏷️ Discount / Offer (Optional)</label><input type="text" id="r-discount" placeholder="e.g. 10% off on Fridays" maxlength="150"></div>
+    <!-- SHOP LOCATION -->
+    <div class="fld">
+      <label>📍 Shop Location (Optional but Recommended)</label>
+      <button type="button" class="loc-btn" id="r-loc-btn" onclick="captureLocation('r')">📍 &nbsp;Tap to Mark My Shop Location</button>
+      <div class="loc-status" id="r-loc-status"></div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5">Saves your GPS coordinates so we can auto-alert you when you leave — no manual address needed.</div>
+    </div>
+    <div class="err" id="r-err">Please fill all required fields.</div>
+    <div class="err" id="r-phone-err">Enter a valid number (03XXXXXXXXX).</div>
+    <div class="err" id="r-dup-err">Number already registered — use "Already Registered" login instead.</div>
+    <div class="ok-msg" id="r-ok">✅ Shop registered successfully!</div>
+    <button class="bp orange" id="r-btn">Register My Shop →</button>
+    <button class="bg" onclick="showPage('s-register')">← Back</button>
+  </div></div></div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 2e — OWNER SHOP VIEW (after login)
-     ══════════════════════ -->
+<!-- PAGE 2e — OWNER SHOP VIEW -->
 <div id="s-owner-view" class="scr">
   <div class="det-header">
     <div class="det-header-info" style="padding-left:4px">
@@ -484,6 +422,9 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     </div>
   </div>
   <div class="det-body">
+    <!-- GEO STATUS BAR -->
+    <div id="geo-status-bar"></div>
+
     <div class="det-status-hero unknown" id="ov-hero">
       <div class="dsh-ico" id="ov-ico">⬜</div>
       <div>
@@ -491,17 +432,10 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
         <div class="dsh-since" id="ov-since">No update today</div>
       </div>
     </div>
-
-    <!-- OPEN / CLOSE BUTTONS -->
-    <div class="brow" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-      <button class="ov-btn bo" id="ov-open-btn" onclick="ownerSetStatus('Open')">
-        <span>🟢</span>OPEN
-      </button>
-      <button class="ov-btn bc" id="ov-close-btn" onclick="ownerSetStatus('Closed')">
-        <span>🔴</span>CLOSED
-      </button>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+      <button class="ov-btn bo" id="ov-open-btn" onclick="ownerSetStatus('Open')"><span>🟢</span>OPEN</button>
+      <button class="ov-btn bc" id="ov-close-btn" onclick="ownerSetStatus('Closed')"><span>🔴</span>CLOSED</button>
     </div>
-
     <div class="times-grid">
       <div class="tg-box tg-open"><div class="tgb-lbl">🟢 Opened</div><div class="tgb-val" id="ov-open">--:--</div></div>
       <div class="tg-box tg-close"><div class="tgb-lbl">🔴 Closed</div><div class="tgb-val" id="ov-close">--:--</div></div>
@@ -525,71 +459,62 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 2f — EDIT SHOP INFO
-     ══════════════════════ -->
+<!-- PAGE 2f — EDIT SHOP INFO -->
 <div id="s-edit" class="scr-flex">
-  <div class="page-pad">
-    <div class="wrap">
-      <div class="card">
-        <div class="bar">
-          <div class="logo">Edit Shop</div>
-          <div class="pill">Edit</div>
-        </div>
-        <div class="ttl">Update Your Info</div>
-        <div class="sub">Changes save to Firebase immediately.</div>
-        <div class="fld"><label>Shop Name</label><input type="text" id="e-name" maxlength="50"></div>
-        <div class="fld"><label>Owner Name</label><input type="text" id="e-owner" maxlength="40"></div>
-        <div class="fld"><label>Category</label>
-          <select id="e-cat">
-            <option value="GR">🛒 Grocery / General Store</option>
-            <option value="MD">💊 Medical / Pharmacy</option>
-            <option value="FD">🍽️ Food / Dhaba / Restaurant</option>
-            <option value="EL">📱 Electronics / Mobile</option>
-            <option value="CL">👕 Clothing / Kapra</option>
-            <option value="HW">🔧 Hardware / Tools</option>
-            <option value="BK">🍞 Bakery</option>
-            <option value="OT">🏪 Other</option>
-          </select>
-        </div>
-        <div class="fld"><label>Area / Mohalla</label><input type="text" id="e-area" maxlength="60"></div>
-        <div class="fld"><label>City</label><input type="text" id="e-city" maxlength="30"></div>
-        <div class="fld"><label>Description</label><textarea id="e-desc" rows="3" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
-        <div class="fld"><label>🏷️ Discount / Offer (Optional)</label><input type="text" id="e-discount" placeholder="e.g. 10% off on Fridays, Free delivery above Rs.500" maxlength="150"></div>
-        <!-- IMAGE UPLOAD -->
-        <div style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;margin-top:4px">Shop Photos (Max 2)</div>
-        <div class="img-grid">
-          <div class="img-slot" id="eslot1" onclick="triggerUpload(1)">
-            <div class="img-slot-ico">📷</div>
-            <div class="img-slot-lbl">Photo 1</div>
-            <div class="img-overlay"><span>Change</span></div>
-            <button class="img-del" id="edel1" onclick="deleteImg(event,1)">✕</button>
-          </div>
-          <div class="img-slot" id="eslot2" onclick="triggerUpload(2)">
-            <div class="img-slot-ico">📷</div>
-            <div class="img-slot-lbl">Photo 2</div>
-            <div class="img-overlay"><span>Change</span></div>
-            <button class="img-del" id="edel2" onclick="deleteImg(event,2)">✕</button>
-          </div>
-        </div>
-        <div class="up-prog" id="up-prog"><div class="up-bar" id="up-bar"></div></div>
-        <div class="img-note">Tap a slot to upload · Max 2MB per image</div>
-        <div class="err" id="e-err">⚠️ Please fill in name and owner.</div>
-        <div class="ok-msg" id="e-ok">✅ Info updated successfully!</div>
-        <button class="bp orange" id="e-save-btn">Save Changes →</button>
-        <button class="bg" onclick="showPage('s-owner-view')">← Back</button>
+  <div class="page-pad"><div class="wrap"><div class="card">
+    <div class="bar"><div class="logo">Edit Shop</div><div class="pill">Edit</div></div>
+    <div class="ttl">Update Your Info</div>
+    <div class="sub">Changes save to Firebase immediately.</div>
+    <div class="fld"><label>Shop Name</label><input type="text" id="e-name" maxlength="50"></div>
+    <div class="fld"><label>Owner Name</label><input type="text" id="e-owner" maxlength="40"></div>
+    <div class="fld"><label>Category</label>
+      <select id="e-cat">
+        <option value="GR">🛒 Grocery / General Store</option>
+        <option value="MD">💊 Medical / Pharmacy</option>
+        <option value="FD">🍽️ Food / Dhaba / Restaurant</option>
+        <option value="EL">📱 Electronics / Mobile</option>
+        <option value="CL">👕 Clothing / Kapra</option>
+        <option value="HW">🔧 Hardware / Tools</option>
+        <option value="BK">🍞 Bakery</option>
+        <option value="OT">🏪 Other</option>
+      </select>
+    </div>
+    <div class="fld"><label>Area / Mohalla</label><input type="text" id="e-area" maxlength="60"></div>
+    <div class="fld"><label>City</label><input type="text" id="e-city" maxlength="30"></div>
+    <div class="fld"><label>Description</label><textarea id="e-desc" rows="3" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
+    <div class="fld"><label>🏷️ Discount / Offer (Optional)</label><input type="text" id="e-discount" placeholder="e.g. 10% off on Fridays" maxlength="150"></div>
+    <!-- UPDATE SHOP LOCATION -->
+    <div class="fld">
+      <label>📍 Shop Location</label>
+      <button type="button" class="loc-btn" id="e-loc-btn" onclick="captureLocation('e')">📍 &nbsp;Update Shop Location</button>
+      <div class="loc-status" id="e-loc-status"></div>
+    </div>
+    <!-- IMAGE UPLOAD -->
+    <div style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;margin-top:4px">Shop Photos (Max 2)</div>
+    <div class="img-grid">
+      <div class="img-slot" id="eslot1" onclick="triggerUpload(1)">
+        <div class="img-slot-ico">📷</div><div class="img-slot-lbl">Photo 1</div>
+        <div class="img-overlay"><span>Change</span></div>
+        <button class="img-del" id="edel1" onclick="deleteImg(event,1)">✕</button>
+      </div>
+      <div class="img-slot" id="eslot2" onclick="triggerUpload(2)">
+        <div class="img-slot-ico">📷</div><div class="img-slot-lbl">Photo 2</div>
+        <div class="img-overlay"><span>Change</span></div>
+        <button class="img-del" id="edel2" onclick="deleteImg(event,2)">✕</button>
       </div>
     </div>
-  </div>
+    <div class="up-prog" id="up-prog"><div class="up-bar" id="up-bar"></div></div>
+    <div class="img-note">Tap a slot to upload · Max 2MB per image</div>
+    <div class="err" id="e-err">Please fill in name and owner.</div>
+    <div class="ok-msg" id="e-ok">✅ Info updated successfully!</div>
+    <button class="bp orange" id="e-save-btn">Save Changes →</button>
+    <button class="bg" onclick="showPage('s-owner-view')">← Back</button>
+  </div></div></div>
 </div>
 
-<!-- hidden file input for image upload -->
 <input type="file" id="file-input" accept="image/*" style="display:none" onchange="handleFile(event)">
 
-<!-- ══════════════════════
-     PAGE 3 — MAIN APP
-     ══════════════════════ -->
+<!-- PAGE 3 — MAIN APP -->
 <div id="s-app" class="scr">
   <div class="header">
     <div class="header-top">
@@ -619,7 +544,6 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     </div>
   </div>
   <div class="content">
-
     <div class="search-wrap">
       <div class="search-ico">🔍</div>
       <input class="search-inp" id="search-inp" placeholder="Search shop name, owner, area…" oninput="onSearch(this.value)">
@@ -628,9 +552,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     <div id="open-section">
       <div class="section-label" id="open-label">Open Now</div>
       <div class="shop-list" id="open-list">
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
-        <div class="skeleton"></div>
+        <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
       </div>
     </div>
     <div id="closed-section" style="margin-top:6px">
@@ -646,10 +568,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-
-<!-- ══════════════════════
-     PAGE 4 — SHOP DETAIL
-     ══════════════════════ -->
+<!-- PAGE 4 — SHOP DETAIL -->
 <div id="s-detail" class="scr">
   <div class="det-header">
     <div class="det-back" id="det-back">←</div>
@@ -663,10 +582,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     <div id="det-images"></div>
     <div class="det-status-hero unknown" id="det-hero">
       <div class="dsh-ico" id="dh-ico">⬜</div>
-      <div>
-        <div class="dsh-status" id="dh-status">Unknown</div>
-        <div class="dsh-since" id="dh-since">No update yet today</div>
-      </div>
+      <div><div class="dsh-status" id="dh-status">Unknown</div><div class="dsh-since" id="dh-since">No update yet today</div></div>
     </div>
     <div class="times-grid">
       <div class="tg-box tg-open"><div class="tgb-lbl">🟢 Opened</div><div class="tgb-val" id="d-open">--:--</div></div>
@@ -692,9 +608,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-<!-- ══════════════════════
-     PROFILE PANEL (slide-in inside app page)
-     ══════════════════════ -->
+<!-- PROFILE PANEL -->
 <div id="s-profile-panel" style="display:none;position:fixed;inset:0;z-index:300;background:var(--bg);overflow-y:auto;animation:rise .3s cubic-bezier(.2,1,.3,1) both">
   <div style="padding:20px 20px 100px;max-width:480px;margin:0 auto">
     <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;padding-top:10px">
@@ -713,8 +627,6 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>
@@ -728,624 +640,453 @@ const G = id => document.getElementById(id);
 const ICONS = {GR:'🛒',MD:'💊',FD:'🍽️',EL:'📱',CL:'👕',HW:'🔧',BK:'🍞',OT:'🏪'};
 const CATS  = {GR:'Grocery / General',MD:'Medical / Pharmacy',FD:'Food / Dhaba',EL:'Electronics',CL:'Clothing',HW:'Hardware',BK:'Bakery',OT:'Other'};
 
-let allShops   = {};
-let activeCat  = 'ALL';
-let searchQ    = '';
-let detailRef  = null;
-let appStarted = false;
+let allShops = {}, activeCat = 'ALL', searchQ = '', detailRef = null, appStarted = false;
 
-// ── THEME ──────────────────────────────────
+// ══════════════════════════════════════
+// GEO-FENCE SYSTEM
+// ══════════════════════════════════════
+let geoWatchId     = null;
+let geoShopLat     = null;
+let geoShopLng     = null;
+let geoAlertShown  = false;
+let geoSnoozedUntil = 0;
+const GEO_RADIUS   = 400; // metres threshold
+
+function haversine(lat1, lng1, lat2, lng2) {
+  const R = 6371000, r = d => d * Math.PI / 180;
+  const dLat = r(lat2-lat1), dLng = r(lng2-lng1);
+  const a = Math.sin(dLat/2)**2 + Math.cos(r(lat1))*Math.cos(r(lat2))*Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function startGeoWatch(shopLat, shopLng) {
+  stopGeoWatch();
+  const bar = G('geo-status-bar');
+  if (!navigator.geolocation) return;
+
+  if (!shopLat || !shopLng) {
+    bar.style.display = 'block';
+    bar.className = 'denied';
+    bar.textContent = '📍 No location saved — tap ✏️ Edit → Update Location to enable auto-close alerts';
+    return;
+  }
+
+  geoShopLat = shopLat; geoShopLng = shopLng; geoAlertShown = false;
+  bar.style.display = 'block'; bar.className = 'tracking';
+  bar.textContent = '📡 Starting location tracking…';
+
+  geoWatchId = navigator.geolocation.watchPosition(
+    pos => {
+      const { latitude: lat, longitude: lng, accuracy } = pos.coords;
+      const dist = Math.round(haversine(geoShopLat, geoShopLng, lat, lng));
+      if (!ownerRef) return;
+      ownerRef.once('value').then(snap => {
+        const d = snap.val() || {};
+        if (d.status !== 'Open') {
+          bar.style.display = 'block'; bar.className = '';
+          bar.textContent = '📍 Tracking paused — shop is closed'; return;
+        }
+        bar.style.display = 'block';
+        bar.className = dist > GEO_RADIUS ? 'far' : 'tracking';
+        bar.textContent = `${dist > GEO_RADIUS ? '⚠️' : '📡'} ${dist}m from shop · ±${Math.round(accuracy)}m accuracy`;
+        const now = Date.now();
+        if (dist > GEO_RADIUS && !geoAlertShown && now > geoSnoozedUntil) {
+          geoAlertShown = true; showGeoAlert(dist);
+        } else if (dist <= GEO_RADIUS) {
+          geoAlertShown = false; hideGeoAlert();
+        }
+      });
+    },
+    err => {
+      bar.style.display = 'block'; bar.className = 'denied';
+      bar.textContent = err.code === 1
+        ? '📍 Location permission denied — enable to get auto-close alerts'
+        : '📍 Could not get location — check GPS signal';
+    },
+    { enableHighAccuracy: true, maximumAge: 30000, timeout: 15000 }
+  );
+}
+
+function stopGeoWatch() {
+  if (geoWatchId !== null) { navigator.geolocation.clearWatch(geoWatchId); geoWatchId = null; }
+  geoAlertShown = false; hideGeoAlert();
+  const bar = G('geo-status-bar'); if (bar) bar.style.display = 'none';
+}
+
+function showGeoAlert(dist) {
+  G('gm-dist-txt').textContent = `${dist} metres away from your shop`;
+  G('geo-modal').classList.add('show');
+}
+function hideGeoAlert() { G('geo-modal').classList.remove('show'); }
+
+function geoConfirmClose() { hideGeoAlert(); ownerSetStatus('Closed'); }
+function geoStillOpen() {
+  hideGeoAlert();
+  geoSnoozedUntil = Date.now() + 20 * 60 * 1000;
+  geoAlertShown = false;
+  const bar = G('geo-status-bar'); bar.className = 'tracking';
+  bar.textContent = '🔕 Alert snoozed 20 mins — still tracking location';
+}
+
+// ── CAPTURE LOCATION (register & edit pages)
+let _capturedLat = null, _capturedLng = null;
+
+function captureLocation(prefix) {
+  const btn = G(prefix+'-loc-btn'), status = G(prefix+'-loc-status');
+  if (!navigator.geolocation) {
+    status.style.display='block'; status.style.color='var(--red)';
+    status.textContent='Location not supported on this device'; return;
+  }
+  btn.textContent='⏳  Getting location…'; btn.className='loc-btn loading'; btn.disabled=true;
+  status.style.display='none';
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude: lat, longitude: lng, accuracy } = pos.coords;
+      _capturedLat = lat; _capturedLng = lng;
+      btn.textContent='✅  Location Saved!'; btn.className='loc-btn saved'; btn.disabled=false;
+      status.style.display='block'; status.style.color='var(--green)';
+      status.textContent=`${lat.toFixed(5)}, ${lng.toFixed(5)} · ±${Math.round(accuracy)}m accuracy`;
+      // If on edit page — save immediately + restart tracking
+      if (prefix==='e' && ownerRef) {
+        ownerRef.update({lat, lng}).then(() => startGeoWatch(lat, lng));
+      }
+    },
+    err => {
+      btn.textContent='📍  Tap to Mark Shop Location'; btn.className='loc-btn'; btn.disabled=false;
+      status.style.display='block'; status.style.color='var(--red)';
+      status.textContent = err.code===1 ? 'Permission denied — please allow location access' : 'Could not get location — try again';
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+}
+
+// ══════════════════════════════════════
+// THEME
+// ══════════════════════════════════════
 function applyTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
-  const dark = t === 'dark';
-  G('theme-ico').textContent   = dark ? '🌙' : '☀️';
-  G('theme-lbl').textContent   = dark ? 'Dark Mode' : 'Light Mode';
-  G('h-theme-btn').textContent = dark ? '🌙' : '☀️';
-  localStorage.setItem('theme', t);
+  const dark = t==='dark';
+  G('theme-ico').textContent=dark?'🌙':'☀️'; G('theme-lbl').textContent=dark?'Dark Mode':'Light Mode';
+  G('h-theme-btn').textContent=dark?'🌙':'☀️'; localStorage.setItem('theme',t);
 }
 function refreshGreeting() {
-  const name = localStorage.getItem('profileName') || '';
-  const el = document.getElementById('h-greeting');
-  if (name) {
-    document.getElementById('h-username').textContent = name;
-    el.style.display = 'block';
-  } else {
-    el.style.display = 'none';
-  }
+  const name=localStorage.getItem('profileName')||'', el=G('h-greeting');
+  if(name){G('h-username').textContent=name;el.style.display='block';}else el.style.display='none';
 }
+function toggleTheme(){applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');}
+applyTheme(localStorage.getItem('theme')||'dark');
 
-function toggleTheme() {
-  applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-}
-applyTheme(localStorage.getItem('theme') || 'dark');
-
-// ── SCREEN SWITCHER ────────────────────────
-// This is the ONLY function that shows/hides pages.
-// Landing always shows first — no auto-skip ever.
+// ══════════════════════════════════════
+// SCREEN SWITCHER
+// ══════════════════════════════════════
 function showPage(id) {
-  document.querySelectorAll('.scr, .scr-flex').forEach(el => el.classList.remove('on'));
-  const target = G(id);
-  target.classList.add('on');
-  // Scroll inner scrollable area back to top
-  const scrollable = target.querySelector('.content, .det-body');
-  if (scrollable) scrollable.scrollTop = 0;
-  // Switch button only visible in app header (s-app)
-  const showSwitchOn = ['s-app'];
-  G('switch-btn').style.display = showSwitchOn.includes(id) ? 'flex' : 'none';
+  document.querySelectorAll('.scr,.scr-flex').forEach(el=>el.classList.remove('on'));
+  const t=G(id); t.classList.add('on');
+  const s=t.querySelector('.content,.det-body'); if(s) s.scrollTop=0;
+  G('switch-btn').style.display=id==='s-app'?'flex':'none';
 }
+function goFindShops(){localStorage.getItem('userPhone')?enterApp():showPage('s-phone');}
+function goMyShop(){const s=localStorage.getItem('ownerPhone');s?openOwnerView(s):showPage('s-register');}
 
-// ── GO FIND SHOPS (skip phone page if already saved) ──
-function goFindShops() {
-  if (localStorage.getItem('userPhone')) {
-    enterApp(); // already have their number, go straight in
-  } else {
-    showPage('s-phone');
-  }
-}
-
-// ── GO MY SHOP (checks saved session first) ──
-function goMyShop() {
-  const saved = localStorage.getItem('ownerPhone');
-  if (saved) {
-    openOwnerView(saved);  // already logged in — go straight to shop
-  } else {
-    showPage('s-register'); // not logged in — show register/login options
-  }
-}
-
-// ── PHONE PAGE (user side) ───────────────
-G('ob-continue').addEventListener('click', () => {
-  const phone = G('ob-phone').value.trim();
-  if (phone && !/^03[0-9]{9}$/.test(phone)) { G('ob-err').style.display='block'; return; }
-  G('ob-err').style.display = 'none';
-  if (phone) {
-    const key = '92' + phone.slice(1);
-    localStorage.setItem('userPhone', key);
-    // Save to Firebase under activity/customers
-    db.ref('activity/customers/' + key).set({
-      phone: key,
-      displayPhone: phone,
-      firstVisit: new Date().toISOString(),
-      lastVisit:  new Date().toISOString(),
-    });
-  }
+// ── PHONE PAGE
+G('ob-continue').addEventListener('click',()=>{
+  const phone=G('ob-phone').value.trim();
+  if(phone&&!/^03[0-9]{9}$/.test(phone)){G('ob-err').style.display='block';return;}
+  G('ob-err').style.display='none';
+  if(phone){const key='92'+phone.slice(1);localStorage.setItem('userPhone',key);
+    db.ref('activity/customers/'+key).set({phone:key,displayPhone:phone,firstVisit:new Date().toISOString(),lastVisit:new Date().toISOString()});}
   enterApp();
 });
-G('ob-skip').addEventListener('click', enterApp);
-G('ob-phone').addEventListener('keydown', e => { if (e.key === 'Enter') G('ob-continue').click(); });
+G('ob-skip').addEventListener('click',enterApp);
+G('ob-phone').addEventListener('keydown',e=>{if(e.key==='Enter')G('ob-continue').click();});
 
-// ── ENTER APP ─────────────────────────────
+// ── ENTER APP
 function enterApp() {
-  refreshGreeting();
-  showPage('s-app');
-  if (appStarted) return;
-  appStarted = true;
-  db.ref('shops').on('value', snap => {
-    allShops = snap.val() || {};
-    updateCounts();
-    renderList();
-  });
+  refreshGreeting(); showPage('s-app');
+  if(appStarted) return; appStarted=true;
+  db.ref('shops').on('value',snap=>{allShops=snap.val()||{};updateCounts();renderList();});
 }
 
-// ── CATEGORY ─────────────────────────────
-function selectCat(cat, el) {
-  activeCat = cat;
-  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('on'));
-  el.classList.add('on');
-  searchQ = ''; G('search-inp').value = ''; G('search-clear').classList.remove('show');
-  renderList();
-  el.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
+// ── CATEGORY
+function selectCat(cat,el){
+  activeCat=cat; document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on')); el.classList.add('on');
+  searchQ='';G('search-inp').value='';G('search-clear').classList.remove('show'); renderList();
+  el.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
 }
 
-// ── SEARCH ───────────────────────────────
-function onSearch(q) {
-  searchQ = q.toLowerCase();
-  G('search-clear').classList.toggle('show', q.length > 0);
-  renderList();
-}
-function clearSearch() {
-  searchQ = ''; G('search-inp').value = ''; G('search-clear').classList.remove('show');
-  renderList();
-}
+// ── SEARCH
+function onSearch(q){searchQ=q.toLowerCase();G('search-clear').classList.toggle('show',q.length>0);renderList();}
+function clearSearch(){searchQ='';G('search-inp').value='';G('search-clear').classList.remove('show');renderList();}
 
-// ── COUNTS ───────────────────────────────
-function updateCounts() {
-  const shops = Object.values(allShops);
-  const openN = shops.filter(s => s.status === 'Open').length;
-  G('h-open-count').textContent = openN;
-  const cats = {ALL:shops.length,GR:0,MD:0,FD:0,EL:0,CL:0,HW:0,BK:0,OT:0};
-  shops.forEach(s => { if (cats[s.cat] !== undefined) cats[s.cat]++; });
-  Object.entries(cats).forEach(([k,v]) => { const el=G('cnt-'+k); if(el) el.textContent=v; });
+// ── COUNTS
+function updateCounts(){
+  const shops=Object.values(allShops);G('h-open-count').textContent=shops.filter(s=>s.status==='Open').length;
+  const cats={ALL:shops.length,GR:0,MD:0,FD:0,EL:0,CL:0,HW:0,BK:0,OT:0};
+  shops.forEach(s=>{if(cats[s.cat]!==undefined)cats[s.cat]++;});
+  Object.entries(cats).forEach(([k,v])=>{const el=G('cnt-'+k);if(el)el.textContent=v;});
 }
 
-// ── RENDER LIST ──────────────────────────
-function renderList() {
-  let entries = Object.entries(allShops);
-  if (activeCat !== 'ALL') entries = entries.filter(([,s]) => s.cat === activeCat);
-  if (searchQ) entries = entries.filter(([,s]) =>
-    (s.name||'').toLowerCase().includes(searchQ) ||
-    (s.owner||'').toLowerCase().includes(searchQ) ||
-    (s.area||'').toLowerCase().includes(searchQ) ||
-    (s.city||'').toLowerCase().includes(searchQ));
-
-  const open    = entries.filter(([,s]) => s.status === 'Open');
-  const notOpen = entries.filter(([,s]) => s.status !== 'Open');
-  notOpen.sort((a,b) => {
-    if (a[1].status==='Closed' && b[1].status!=='Closed') return -1;
-    if (b[1].status==='Closed' && a[1].status!=='Closed') return 1;
-    return 0;
-  });
-
-  G('open-label').textContent   = open.length    ? `Open Now (${open.length})`            : 'Open Now';
-  G('closed-label').textContent = notOpen.length ? `Closed / Unknown (${notOpen.length})` : 'Closed / Unknown';
-  G('open-list').innerHTML = open.length
-    ? open.map(([k,s]) => cardHTML(k,s)).join('')
-    : '<div class="empty-state"><div class="empty-ico">🔒</div><div class="empty-title">No shops open</div><div class="empty-sub">Check back later or try a different category</div></div>';
-  G('closed-list').innerHTML = notOpen.map(([k,s]) => cardHTML(k,s)).join('');
-  G('closed-section').style.display = notOpen.length ? 'block' : 'none';
-
-  if (!entries.length && searchQ) {
-    G('open-list').innerHTML = '<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">No shops found</div><div class="empty-sub">Try different search terms</div></div>';
-    G('closed-section').style.display = 'none';
-  }
+// ── RENDER LIST
+function renderList(){
+  let entries=Object.entries(allShops);
+  if(activeCat!=='ALL') entries=entries.filter(([,s])=>s.cat===activeCat);
+  if(searchQ) entries=entries.filter(([,s])=>
+    (s.name||'').toLowerCase().includes(searchQ)||(s.owner||'').toLowerCase().includes(searchQ)||
+    (s.area||'').toLowerCase().includes(searchQ)||(s.city||'').toLowerCase().includes(searchQ));
+  const open=entries.filter(([,s])=>s.status==='Open');
+  const notOpen=entries.filter(([,s])=>s.status!=='Open');
+  notOpen.sort((a,b)=>{if(a[1].status==='Closed'&&b[1].status!=='Closed')return -1;if(b[1].status==='Closed'&&a[1].status!=='Closed')return 1;return 0;});
+  G('open-label').textContent=open.length?`Open Now (${open.length})`:'Open Now';
+  G('closed-label').textContent=notOpen.length?`Closed / Unknown (${notOpen.length})`:'Closed / Unknown';
+  G('open-list').innerHTML=open.length?open.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">🔒</div><div class="empty-title">No shops open</div><div class="empty-sub">Check back later or try a different category</div></div>';
+  G('closed-list').innerHTML=notOpen.map(([k,s])=>cardHTML(k,s)).join('');
+  G('closed-section').style.display=notOpen.length?'block':'none';
+  if(!entries.length&&searchQ){G('open-list').innerHTML='<div class="empty-state"><div class="empty-ico">🔍</div><div class="empty-title">No shops found</div><div class="empty-sub">Try different search terms</div></div>';G('closed-section').style.display='none';}
 }
 
-// ── CARD HTML ────────────────────────────
-function cardHTML(key, s) {
-  const isOpen=s.status==='Open', isClosed=s.status==='Closed';
-  const icon = ICONS[s.cat]||'🏪';
-  const badge = isOpen ? `<span class="status-dot s-open">● Open</span>`
-    : isClosed ? `<span class="status-dot s-closed">● Closed</span>`
-    : `<span class="status-dot s-unknown">● Unknown</span>`;
-  const timeStr = isOpen && s.openTime && s.openTime!=='--:--' ? `Since ${s.openTime}`
-    : isClosed && s.closeTime && s.closeTime!=='--:--' ? `Closed ${s.closeTime}` : 'No update today';
-  const imgHTML = s.img1
-    ? `<img src="${s.img1}" alt="" loading="lazy">`
-    : `<div class="sc-img-empty">${icon}</div>`;
-  return `<div class="shop-card${!isOpen?' offline':''}" onclick="openDetail('${key}')">
-    <div class="sc-strip"></div>
-    <div class="sc-inner">
-      <div class="sc-img">${imgHTML}</div>
-      <div class="sc-body">
-        <div>
-          <div class="sc-top"><div class="sc-name">${s.name||'—'}</div><div>${badge}</div></div>
-          <div class="sc-owner">👤 ${s.owner||'—'}</div>
-          ${s.discount?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,122,47,0.12);border:1px solid rgba(240,122,47,0.28);border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--orange);margin-top:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏷️ ${s.discount}</div>`:''}
-        </div>
-        <div class="sc-foot">
-          <div class="sc-area">📍 ${s.area||'—'}${s.city?', '+s.city:''}</div>
-          <div class="sc-time ${isOpen?'open-time':isClosed?'closed-time':''}">${timeStr}</div>
-        </div>
-      </div>
-    </div></div>`;
+// ── CARD HTML
+function cardHTML(key,s){
+  const isOpen=s.status==='Open',isClosed=s.status==='Closed',icon=ICONS[s.cat]||'🏪';
+  const badge=isOpen?`<span class="status-dot s-open">● Open</span>`:isClosed?`<span class="status-dot s-closed">● Closed</span>`:`<span class="status-dot s-unknown">● Unknown</span>`;
+  const timeStr=isOpen&&s.openTime&&s.openTime!=='--:--'?`Since ${s.openTime}`:isClosed&&s.closeTime&&s.closeTime!=='--:--'?`Closed ${s.closeTime}`:'No update today';
+  const imgHTML=s.img1?`<img src="${s.img1}" alt="" loading="lazy">`:`<div class="sc-img-empty">${icon}</div>`;
+  return `<div class="shop-card${!isOpen?' offline':''}" onclick="openDetail('${key}')"><div class="sc-strip"></div><div class="sc-inner"><div class="sc-img">${imgHTML}</div><div class="sc-body"><div><div class="sc-top"><div class="sc-name">${s.name||'—'}</div><div>${badge}</div></div><div class="sc-owner">👤 ${s.owner||'—'}</div>${s.discount?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,122,47,0.12);border:1px solid rgba(240,122,47,0.28);border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--orange);margin-top:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏷️ ${s.discount}</div>`:''}</div><div class="sc-foot"><div class="sc-area">📍 ${s.area||'—'}${s.city?', '+s.city:''}</div><div class="sc-time ${isOpen?'open-time':isClosed?'closed-time':''}">${timeStr}</div></div></div></div></div>`;
 }
 
-// ── DETAIL ───────────────────────────────
-function openDetail(key) {
-  const s = allShops[key]; if(!s) return;
-  G('det-hname').textContent = s.name||'Shop';
-  G('det-hsub').textContent  = (CATS[s.cat]||'')+(s.area?' · '+s.area:'');
-  const h1=!!s.img1, h2=!!s.img2;
-  let ih='';
-  if(h1||h2){
-    ih=`<div class="det-images${h1&&h2?'':' det-single'}">`;
-    if(h1) ih+=`<div class="det-img"><img src="${s.img1}" loading="lazy"></div>`;
-    if(h2) ih+=`<div class="det-img"><img src="${s.img2}" loading="lazy"></div>`;
-    ih+=`</div>`;
-  } else {
-    ih=`<div class="det-images det-single" style="margin-bottom:16px"><div class="det-img" style="border-radius:16px"><div class="det-img-empty">${ICONS[s.cat]||'🏪'}<span>No photos yet</span></div></div></div>`;
-  }
+// ── DETAIL
+function openDetail(key){
+  const s=allShops[key];if(!s)return;
+  G('det-hname').textContent=s.name||'Shop';G('det-hsub').textContent=(CATS[s.cat]||'')+(s.area?' · '+s.area:'');
+  const h1=!!s.img1,h2=!!s.img2;let ih='';
+  if(h1||h2){ih=`<div class="det-images${h1&&h2?'':' det-single'}">`;if(h1)ih+=`<div class="det-img"><img src="${s.img1}" loading="lazy"></div>`;if(h2)ih+=`<div class="det-img"><img src="${s.img2}" loading="lazy"></div>`;ih+=`</div>`;}
+  else{ih=`<div class="det-images det-single" style="margin-bottom:16px"><div class="det-img" style="border-radius:16px"><div class="det-img-empty">${ICONS[s.cat]||'🏪'}<span>No photos yet</span></div></div></div>`;}
   G('det-images').innerHTML=ih;
-  G('d-name').textContent =s.name||'—'; G('d-owner').textContent=s.owner||'—';
-  G('d-cat').textContent  =(ICONS[s.cat]||'')+' '+(CATS[s.cat]||'—');
-  G('d-area').textContent =s.area||'—'; G('d-city').textContent=s.city||'—';
-  if(s.desc){G('det-desc').style.display='block';G('d-desc-text').textContent=s.desc;}
-  else G('det-desc').style.display='none';
-  if(s.discount){G('det-discount').style.display='block';G('d-discount-text').textContent=s.discount;}
-  else G('det-discount').style.display='none';
+  G('d-name').textContent=s.name||'—';G('d-owner').textContent=s.owner||'—';
+  G('d-cat').textContent=(ICONS[s.cat]||'')+' '+(CATS[s.cat]||'—');
+  G('d-area').textContent=s.area||'—';G('d-city').textContent=s.city||'—';
+  if(s.desc){G('det-desc').style.display='block';G('d-desc-text').textContent=s.desc;}else G('det-desc').style.display='none';
+  if(s.discount){G('det-discount').style.display='block';G('d-discount-text').textContent=s.discount;}else G('det-discount').style.display='none';
   G('det-dir').onclick=()=>window.open('https://www.google.com/maps/search/'+encodeURIComponent((s.name||'shop')+' '+(s.area||'')+' '+(s.city||'')),'_blank');
-  applyStatus(s);
-  showPage('s-detail');
-  if(detailRef) detailRef.off();
-  detailRef=db.ref('shops/'+key);
+  applyStatus(s);showPage('s-detail');
+  if(detailRef)detailRef.off();detailRef=db.ref('shops/'+key);
   detailRef.on('value',snap=>{const d=snap.val();if(!d)return;applyStatus(d);G('d-open').textContent=d.openTime||'--:--';G('d-close').textContent=d.closeTime||'--:--';});
 }
 
-function applyStatus(s) {
-  const h=G('det-hero'); h.className='det-status-hero';
-  if(s.status==='Open'){
-    h.classList.add('open');G('dh-ico').textContent='🟢';G('dh-status').textContent='Open Now';
-    G('dh-since').textContent=s.openTime&&s.openTime!=='--:--'?'Since '+s.openTime:'Open today';
-  } else if(s.status==='Closed'){
-    h.classList.add('closed');G('dh-ico').textContent='🔴';G('dh-status').textContent='Closed';
-    G('dh-since').textContent=s.closeTime&&s.closeTime!=='--:--'?'Closed at '+s.closeTime:'Closed today';
-  } else {
-    h.classList.add('unknown');G('dh-ico').textContent='⬜';G('dh-status').textContent='Status Unknown';G('dh-since').textContent='No update today';
-  }
-  G('d-open').textContent=s.openTime||'--:--'; G('d-close').textContent=s.closeTime||'--:--';
+function applyStatus(s){
+  const h=G('det-hero');h.className='det-status-hero';
+  if(s.status==='Open'){h.classList.add('open');G('dh-ico').textContent='🟢';G('dh-status').textContent='Open Now';G('dh-since').textContent=s.openTime&&s.openTime!=='--:--'?'Since '+s.openTime:'Open today';}
+  else if(s.status==='Closed'){h.classList.add('closed');G('dh-ico').textContent='🔴';G('dh-status').textContent='Closed';G('dh-since').textContent=s.closeTime&&s.closeTime!=='--:--'?'Closed at '+s.closeTime:'Closed today';}
+  else{h.classList.add('unknown');G('dh-ico').textContent='⬜';G('dh-status').textContent='Status Unknown';G('dh-since').textContent='No update today';}
+  G('d-open').textContent=s.openTime||'--:--';G('d-close').textContent=s.closeTime||'--:--';
   G('det-hstatus').innerHTML=s.status==='Open'?`<span class="status-dot s-open" style="font-size:11px">● Open</span>`:s.status==='Closed'?`<span class="status-dot s-closed" style="font-size:11px">● Closed</span>`:'';
 }
+G('det-back').addEventListener('click',()=>{if(detailRef){detailRef.off();detailRef=null;}showPage('s-app');});
 
-// ── DETAIL BACK ──────────────────────────
-G('det-back').addEventListener('click',()=>{
-  if(detailRef){detailRef.off();detailRef=null;}
-  showPage('s-app');
-});
-
-// ── BOTTOM NAV ───────────────────────────
+// ── BOTTOM NAV
 function setTab(tab,el){
-  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('on'));
-  el.classList.add('on');
-  if(tab==='home'){
-    G('closed-section').style.display='';
-    selectCat('ALL',document.querySelector('.cat-tab[data-cat="ALL"]'));
-  } else if(tab==='open'){
-    activeCat='ALL'; searchQ=''; G('search-inp').value='';
-    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
-    document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('on'));el.classList.add('on');
+  if(tab==='home'){G('closed-section').style.display='';selectCat('ALL',document.querySelector('.cat-tab[data-cat="ALL"]'));}
+  else if(tab==='open'){
+    activeCat='ALL';searchQ='';G('search-inp').value='';
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
     const e=Object.entries(allShops).filter(([,s])=>s.status==='Open');
     G('open-label').textContent=`Online Now (${e.length})`;
     G('open-list').innerHTML=e.length?e.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">😴</div><div class="empty-title">No shops online right now</div><div class="empty-sub">Check back soon</div></div>';
     G('closed-section').style.display='none';
   } else if(tab==='discounts'){
-    activeCat='ALL'; searchQ=''; G('search-inp').value='';
-    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
-    document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
+    activeCat='ALL';searchQ='';G('search-inp').value='';
+    document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
     const all=Object.entries(allShops).filter(([,s])=>s.discount&&s.discount.trim().length>0);
     G('open-label').textContent=`Shops with Offers (${all.length})`;
-    G('open-list').innerHTML=all.length?all.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">🏷️</div><div class="empty-title">No discount offers yet</div><div class="empty-sub">Shopkeepers can add their offers from My Shop → Edit</div></div>';
+    G('open-list').innerHTML=all.length?all.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">🏷️</div><div class="empty-title">No discount offers yet</div><div class="empty-sub">Shopkeepers can add offers from My Shop → Edit</div></div>';
     G('closed-section').style.display='none';
-  } else if(tab==='profile'){
-    openProfile();
-  }
+  } else if(tab==='profile'){openProfile();}
 }
 
-// ── GO FIND SHOPS ────────────────────────
-// If user already gave their number before, skip phone page
-function goFindShops() {
-  if (localStorage.getItem('userPhone')) {
-    enterApp();
-  } else {
-    showPage('s-phone');
-  }
-}
+// ── PHONE HELPERS
+function normPhone(p){p=p.replace(/\D/g,'');if(p.startsWith('92'))return p;if(p.startsWith('0'))return '92'+p.slice(1);return '92'+p;}
+function dispPhone(p){p=String(p);return p.startsWith('92')?'0'+p.slice(2):p;}
 
-// ── GO MY SHOP ───────────────────────────
-// If owner already logged in, skip straight to shop view
-function goMyShop() {
-  const saved = localStorage.getItem('ownerPhone');
-  if (saved) {
-    openOwnerView(saved);
-  } else {
-    showPage('s-register');
-  }
-}
-
-// ── PHONE PAGE (user side) ───────────────
-G('ob-continue').addEventListener('click', () => {
-  const phone = G('ob-phone').value.trim();
-  if (phone && !/^03[0-9]{9}$/.test(phone)) { G('ob-err').style.display='block'; return; }
-  G('ob-err').style.display = 'none';
-  if (phone) {
-    const key = '92' + phone.slice(1);
-    localStorage.setItem('userPhone', key);
-    // Save user phone to Firebase under users node
-    db.ref('users/' + key).set({
-      phone: key,
-      displayPhone: phone,
-      lastVisit: new Date().toISOString()
-    });
-  }
-  enterApp();
-});
-G('ob-skip').addEventListener('click', enterApp);
-G('ob-phone').addEventListener('keydown', e => { if (e.key === 'Enter') G('ob-continue').click(); });
-
-// ── OWNER: REGISTER ─────────────────────
-function normPhone(p){
-  p=p.replace(/\D/g,'');
-  if(p.startsWith('92')) return p;
-  if(p.startsWith('0'))  return '92'+p.slice(1);
-  return '92'+p;
-}
-function dispPhone(p){
-  p=String(p);
-  return p.startsWith('92') ? '0'+p.slice(2) : p;
-}
-
-G('r-btn').addEventListener('click', async () => {
-  const name  = G('r-name').value.trim();
-  const owner = G('r-owner').value.trim();
-  const phone = G('r-phone').value.trim();
-  const cat   = G('r-cat').value;
-  const area  = G('r-area').value.trim();
-  const city  = G('r-city').value.trim();
-  const desc  = G('r-desc').value.trim();
-
-  ['r-err','r-phone-err','r-dup-err','r-ok'].forEach(id => G(id).style.display='none');
-
-  if (!name||!owner||!phone||!cat||!area||!city){ G('r-err').style.display='block'; return; }
-  if (!/^03[0-9]{9}$/.test(phone)){ G('r-phone-err').style.display='block'; return; }
-
-  const key = normPhone(phone);
-  G('r-btn').disabled=true; G('r-btn').textContent='Checking…';
-
-  const snap = await db.ref('shops/'+key).once('value');
-  if (snap.val()){
-    G('r-dup-err').style.display='block';
-    G('r-btn').disabled=false; G('r-btn').textContent='Register My Shop →';
-    return;
-  }
-
+// ── OWNER: REGISTER
+G('r-btn').addEventListener('click',async()=>{
+  const name=G('r-name').value.trim(),owner=G('r-owner').value.trim(),phone=G('r-phone').value.trim();
+  const cat=G('r-cat').value,area=G('r-area').value.trim(),city=G('r-city').value.trim(),desc=G('r-desc').value.trim();
+  ['r-err','r-phone-err','r-dup-err','r-ok'].forEach(id=>G(id).style.display='none');
+  if(!name||!owner||!phone||!cat||!area||!city){G('r-err').style.display='block';return;}
+  if(!/^03[0-9]{9}$/.test(phone)){G('r-phone-err').style.display='block';return;}
+  const key=normPhone(phone);
+  G('r-btn').disabled=true;G('r-btn').textContent='Checking…';
+  const snap=await db.ref('shops/'+key).once('value');
+  if(snap.val()){G('r-dup-err').style.display='block';G('r-btn').disabled=false;G('r-btn').textContent='Register My Shop →';return;}
   G('r-btn').textContent='Registering…';
-  const now = new Date().toISOString();
   await db.ref('shops/'+key).set({
-    name, owner, phone:key, displayPhone:phone,
-    cat, area, city, desc:desc||'', discount:G('r-discount').value.trim()||'',
-    status:'unknown', openTime:'--:--', closeTime:'--:--',
-    lastUpdated:'--', registeredAt:now, img1:'', img2:'',
+    name,owner,phone:key,displayPhone:phone,cat,area,city,desc:desc||'',
+    discount:G('r-discount').value.trim()||'',
+    status:'unknown',openTime:'--:--',closeTime:'--:--',
+    lastUpdated:'--',registeredAt:new Date().toISOString(),img1:'',img2:'',
+    lat:_capturedLat||null, lng:_capturedLng||null,  // ← GEO COORDINATES
   });
-
-  G('r-ok').style.display='block';
-  G('r-btn').disabled=false; G('r-btn').textContent='Register My Shop →';
-
-  // Save session + go to owner view
-  localStorage.setItem('ownerPhone', key);
-  setTimeout(() => openOwnerView(key), 1500);
+  G('r-ok').style.display='block';G('r-btn').disabled=false;G('r-btn').textContent='Register My Shop →';
+  localStorage.setItem('ownerPhone',key);
+  setTimeout(()=>openOwnerView(key),1500);
 });
 
-// ── OWNER: LOGIN ─────────────────────────
-G('ol-btn').addEventListener('click', async () => {
-  const phone = G('ol-phone').value.trim();
-  if (!phone) return;
-  const key = normPhone(phone);
-  G('ol-err').style.display='none';
-  G('ol-btn').disabled=true; G('ol-btn').textContent='Looking up…';
-  const snap = await db.ref('shops/'+key).once('value');
-  G('ol-btn').disabled=false; G('ol-btn').textContent='Open My Shop →';
-  if (!snap.val()){ G('ol-err').style.display='block'; return; }
-  localStorage.setItem('ownerPhone', key);
-  openOwnerView(key);
+// ── OWNER: LOGIN
+G('ol-btn').addEventListener('click',async()=>{
+  const phone=G('ol-phone').value.trim();if(!phone)return;
+  const key=normPhone(phone);G('ol-err').style.display='none';G('ol-btn').disabled=true;G('ol-btn').textContent='Looking up…';
+  const snap=await db.ref('shops/'+key).once('value');
+  G('ol-btn').disabled=false;G('ol-btn').textContent='Open My Shop →';
+  if(!snap.val()){G('ol-err').style.display='block';return;}
+  localStorage.setItem('ownerPhone',key);openOwnerView(key);
 });
-G('ol-phone').addEventListener('keydown', e=>{ if(e.key==='Enter') G('ol-btn').click(); });
+G('ol-phone').addEventListener('keydown',e=>{if(e.key==='Enter')G('ol-btn').click();});
 
-// ── OWNER VIEW ───────────────────────────
-let ownerRef = null;
-let ownerKey = null;
+// ── OWNER VIEW
+let ownerRef=null,ownerKey=null;
 
-function openOwnerView(key) {
-  ownerKey = key;
-  if(ownerRef) ownerRef.off();
+function openOwnerView(key){
+  ownerKey=key;if(ownerRef)ownerRef.off();
   showPage('s-owner-view');
-  ownerRef = db.ref('shops/'+key);
-  ownerRef.on('value', snap => {
-    const d = snap.val(); if(!d) return;
-    G('ov-name').textContent  = d.name||'My Shop';
-    G('ov-sub').textContent   = (CATS[d.cat]||d.cat||'')+(d.area?' · '+d.area:'');
-    G('ov-nm').textContent    = d.name||'—';
-    G('ov-owner').textContent = d.owner||'—';
-    G('ov-phone').textContent = d.displayPhone||dispPhone(key);
-    G('ov-cat').textContent   = (ICONS[d.cat]||'')+' '+(CATS[d.cat]||d.cat||'—');
-    G('ov-area').textContent  = d.area||'—';
-    G('ov-city').textContent  = d.city||'—';
-    if(d.discount){ G('ov-discount-txt').textContent=d.discount; G('ov-discount-row').style.display='block'; } else { G('ov-discount-row').style.display='none'; }
-    G('ov-open').textContent  = d.openTime||'--:--';
-    G('ov-close').textContent = d.closeTime||'--:--';
-    G('ov-lastsync').textContent = d.lastUpdated||'--';
-    // Status hero
-    const h=G('ov-hero'); h.className='det-status-hero';
+  ownerRef=db.ref('shops/'+key);
+  ownerRef.on('value',snap=>{
+    const d=snap.val();if(!d)return;
+    G('ov-name').textContent=d.name||'My Shop';G('ov-sub').textContent=(CATS[d.cat]||d.cat||'')+(d.area?' · '+d.area:'');
+    G('ov-nm').textContent=d.name||'—';G('ov-owner').textContent=d.owner||'—';
+    G('ov-phone').textContent=d.displayPhone||dispPhone(key);
+    G('ov-cat').textContent=(ICONS[d.cat]||'')+' '+(CATS[d.cat]||d.cat||'—');
+    G('ov-area').textContent=d.area||'—';G('ov-city').textContent=d.city||'—';
+    if(d.discount){G('ov-discount-txt').textContent=d.discount;G('ov-discount-row').style.display='block';}else G('ov-discount-row').style.display='none';
+    G('ov-open').textContent=d.openTime||'--:--';G('ov-close').textContent=d.closeTime||'--:--';
+    G('ov-lastsync').textContent=d.lastUpdated||'--';
+    const h=G('ov-hero');h.className='det-status-hero';
     if(d.status==='Open'){
-      h.classList.add('open'); G('ov-ico').textContent='🟢'; G('ov-stat').textContent='Open Now';
+      h.classList.add('open');G('ov-ico').textContent='🟢';G('ov-stat').textContent='Open Now';
       G('ov-since').textContent=d.openTime&&d.openTime!=='--:--'?'Since '+d.openTime:'Open today';
-      G('ov-open-btn').classList.add('a'); G('ov-close-btn').classList.remove('a');
-    } else if(d.status==='Closed'){
-      h.classList.add('closed'); G('ov-ico').textContent='🔴'; G('ov-stat').textContent='Closed';
+      G('ov-open-btn').classList.add('a');G('ov-close-btn').classList.remove('a');
+    }else if(d.status==='Closed'){
+      h.classList.add('closed');G('ov-ico').textContent='🔴';G('ov-stat').textContent='Closed';
       G('ov-since').textContent=d.closeTime&&d.closeTime!=='--:--'?'Closed at '+d.closeTime:'Closed today';
-      G('ov-close-btn').classList.add('a'); G('ov-open-btn').classList.remove('a');
-    } else {
-      h.classList.add('unknown'); G('ov-ico').textContent='⬜'; G('ov-stat').textContent='Status Unknown';
-      G('ov-since').textContent='No update today';
-      G('ov-open-btn').classList.remove('a'); G('ov-close-btn').classList.remove('a');
+      G('ov-close-btn').classList.add('a');G('ov-open-btn').classList.remove('a');
+    }else{
+      h.classList.add('unknown');G('ov-ico').textContent='⬜';G('ov-stat').textContent='Status Unknown';
+      G('ov-since').textContent='No update today';G('ov-open-btn').classList.remove('a');G('ov-close-btn').classList.remove('a');
     }
-    G('ov-badge').innerHTML = d.status==='Open'
-      ? `<span class="status-dot s-open" style="font-size:11px">● Open</span>`
-      : d.status==='Closed'
-      ? `<span class="status-dot s-closed" style="font-size:11px">● Closed</span>` : '';
+    G('ov-badge').innerHTML=d.status==='Open'?`<span class="status-dot s-open" style="font-size:11px">● Open</span>`:d.status==='Closed'?`<span class="status-dot s-closed" style="font-size:11px">● Closed</span>`:'';
+
+    // ── START GEO-FENCE WATCH
+    if(d.lat&&d.lng){
+      if(d.lat!==geoShopLat||d.lng!==geoShopLng) startGeoWatch(d.lat,d.lng);
+    }else{
+      startGeoWatch(null,null);
+    }
   });
 }
 
-// ── OWNER: SET STATUS ────────────────────
-function ownerSetStatus(status) {
-  if(!ownerKey || !ownerRef) return;
-  const t = new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  ownerRef.once('value').then(snap => {
-    const cur = snap.val()||{};
-    return ownerRef.update({
-      status,
-      lastUpdated: t,
-      openTime:  status==='Open'   ? t : (cur.openTime  ||'--:--'),
-      closeTime: status==='Closed' ? t : (cur.closeTime ||'--:--'),
-    });
-  }).then(() => {
-  }).catch(e => alert('Error: '+e.message));
+// ── OWNER: SET STATUS
+function ownerSetStatus(status){
+  if(!ownerKey||!ownerRef)return;
+  const t=new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  ownerRef.once('value').then(snap=>{
+    const cur=snap.val()||{};
+    return ownerRef.update({status,lastUpdated:t,openTime:status==='Open'?t:(cur.openTime||'--:--'),closeTime:status==='Closed'?t:(cur.closeTime||'--:--')});
+  }).catch(e=>alert('Error: '+e.message));
 }
 
-// ── OWNER LOGOUT ────────────────────────
-function ownerLogout() {
+// ── OWNER LOGOUT
+function ownerLogout(){
+  stopGeoWatch();
   localStorage.removeItem('ownerPhone');
-  if(ownerRef){ownerRef.off();ownerRef=null;}
-  ownerKey=null;
-  showPage('s-register');
+  if(ownerRef){ownerRef.off();ownerRef=null;}ownerKey=null;showPage('s-register');
 }
 
-// ── EDIT PAGE ────────────────────────────
-let uploadSlot = 1;
-
-function openEditPage() {
-  if (!ownerRef) return;
-  ownerRef.once('value').then(snap => {
-    const d = snap.val()||{};
-    document.getElementById('e-name').value  = d.name  ||'';
-    document.getElementById('e-owner').value = d.owner ||'';
-    document.getElementById('e-cat').value   = d.cat   ||'GR';
-    document.getElementById('e-area').value  = d.area  ||'';
-    document.getElementById('e-city').value  = d.city  ||'';
-    document.getElementById('e-desc').value     = d.desc     ||'';
-    document.getElementById('e-discount').value = d.discount ||'';
-    renderSlot(1, d.img1||'');
-    renderSlot(2, d.img2||'');
-    document.getElementById('e-err').style.display='none';
-    document.getElementById('e-ok').style.display='none';
-    showPage('s-edit');
+// ── EDIT PAGE
+let uploadSlot=1;
+function openEditPage(){
+  if(!ownerRef)return;_capturedLat=null;_capturedLng=null;
+  ownerRef.once('value').then(snap=>{
+    const d=snap.val()||{};
+    G('e-name').value=d.name||'';G('e-owner').value=d.owner||'';G('e-cat').value=d.cat||'GR';
+    G('e-area').value=d.area||'';G('e-city').value=d.city||'';G('e-desc').value=d.desc||'';G('e-discount').value=d.discount||'';
+    const lb=G('e-loc-btn'),ls=G('e-loc-status');
+    if(d.lat&&d.lng){lb.textContent='✅  Location Saved — Tap to Update';lb.className='loc-btn saved';ls.style.display='block';ls.style.color='var(--green)';ls.textContent=`${Number(d.lat).toFixed(5)}, ${Number(d.lng).toFixed(5)}`;}
+    else{lb.textContent='📍  Tap to Mark Shop Location';lb.className='loc-btn';ls.style.display='none';}
+    renderSlot(1,d.img1||'');renderSlot(2,d.img2||'');
+    G('e-err').style.display='none';G('e-ok').style.display='none';showPage('s-edit');
   });
 }
-
-function renderSlot(n, url) {
-  const slot = document.getElementById('eslot'+n);
-  const old  = slot.querySelector('img');
-  if (old) old.remove();
-  if (url) {
-    const img = document.createElement('img');
-    img.src = url;
-    img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';
-    slot.appendChild(img);
-    slot.classList.add('has-img');
-  } else {
-    slot.classList.remove('has-img');
-  }
+function renderSlot(n,url){
+  const slot=G('eslot'+n),old=slot.querySelector('img');if(old)old.remove();
+  if(url){const img=document.createElement('img');img.src=url;img.style.cssText='position:absolute;inset:0;width:100%;height:100%;object-fit:cover';slot.appendChild(img);slot.classList.add('has-img');}
+  else slot.classList.remove('has-img');
 }
-
-document.getElementById('e-save-btn').addEventListener('click', async () => {
-  const name  = document.getElementById('e-name').value.trim();
-  const owner = document.getElementById('e-owner').value.trim();
-  if (!name||!owner) { document.getElementById('e-err').style.display='block'; return; }
-  document.getElementById('e-err').style.display='none';
-  document.getElementById('e-save-btn').disabled=true;
-  document.getElementById('e-save-btn').textContent='Saving…';
-  try {
-    await ownerRef.update({
-      name, owner,
-      cat:  document.getElementById('e-cat').value,
-      area: document.getElementById('e-area').value.trim(),
-      city: document.getElementById('e-city').value.trim(),
-      desc:     document.getElementById('e-desc').value.trim(),
-      discount: document.getElementById('e-discount').value.trim(),
-    });
-    document.getElementById('e-ok').style.display='block';
-    setTimeout(()=>{ document.getElementById('e-ok').style.display='none'; }, 2500);
-  } catch(e) { alert('Save failed: '+e.message); }
-  document.getElementById('e-save-btn').disabled=false;
-  document.getElementById('e-save-btn').textContent='Save Changes →';
+G('e-save-btn').addEventListener('click',async()=>{
+  const name=G('e-name').value.trim(),owner=G('e-owner').value.trim();
+  if(!name||!owner){G('e-err').style.display='block';return;}
+  G('e-err').style.display='none';G('e-save-btn').disabled=true;G('e-save-btn').textContent='Saving…';
+  try{
+    const updates={name,owner,cat:G('e-cat').value,area:G('e-area').value.trim(),city:G('e-city').value.trim(),desc:G('e-desc').value.trim(),discount:G('e-discount').value.trim()};
+    if(_capturedLat!==null){updates.lat=_capturedLat;updates.lng=_capturedLng;}
+    await ownerRef.update(updates);
+    G('e-ok').style.display='block';setTimeout(()=>G('e-ok').style.display='none',2500);
+  }catch(e){alert('Save failed: '+e.message);}
+  G('e-save-btn').disabled=false;G('e-save-btn').textContent='Save Changes →';
 });
 
-// ── IMAGE UPLOAD ─────────────────────────
-function triggerUpload(n) {
-  uploadSlot = n;
-  const fi = document.getElementById('file-input');
-  fi.value='';
-  fi.click();
-}
-
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 2*1024*1024) { alert('Image too large. Max 2MB.'); return; }
-  const prog = document.getElementById('up-prog');
-  const bar  = document.getElementById('up-bar');
-  prog.style.display='block'; bar.style.width='0%';
-  const reader = new FileReader();
-  reader.onprogress = ev => { if(ev.lengthComputable) bar.style.width=(ev.loaded/ev.total*70)+'%'; };
-  reader.onload = ev => {
-    bar.style.width='80%';
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement('canvas');
-      const maxW = 600; let w=img.width, h=img.height;
-      if(w>maxW){h=Math.round(h*(maxW/w));w=maxW;}
-      canvas.width=w; canvas.height=h;
-      canvas.getContext('2d').drawImage(img,0,0,w,h);
-      const compressed = canvas.toDataURL('image/jpeg',0.75);
+// ── IMAGE UPLOAD
+function triggerUpload(n){uploadSlot=n;const fi=G('file-input');fi.value='';fi.click();}
+function handleFile(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.size>2*1024*1024){alert('Image too large. Max 2MB.');return;}
+  const prog=G('up-prog'),bar=G('up-bar');prog.style.display='block';bar.style.width='0%';
+  const reader=new FileReader();
+  reader.onprogress=ev=>{if(ev.lengthComputable)bar.style.width=(ev.loaded/ev.total*70)+'%';};
+  reader.onload=ev=>{
+    bar.style.width='80%';const img=new Image();
+    img.onload=()=>{
+      const canvas=document.createElement('canvas');const maxW=600;let w=img.width,h=img.height;
+      if(w>maxW){h=Math.round(h*(maxW/w));w=maxW;}canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);const compressed=canvas.toDataURL('image/jpeg',0.75);
       bar.style.width='90%';
-      const field = 'img'+uploadSlot;
-      ownerRef.update({[field]:compressed}).then(()=>{
-        bar.style.width='100%';
-        renderSlot(uploadSlot, compressed);
-        setTimeout(()=>{ prog.style.display='none'; bar.style.width='0%'; },1200);
-      }).catch(err=>{ alert('Upload failed: '+err.message); prog.style.display='none'; });
-    };
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(file);
+      ownerRef.update({['img'+uploadSlot]:compressed}).then(()=>{bar.style.width='100%';renderSlot(uploadSlot,compressed);setTimeout(()=>{prog.style.display='none';bar.style.width='0%';},1200);})
+      .catch(err=>{alert('Upload failed: '+err.message);prog.style.display='none';});
+    };img.src=ev.target.result;
+  };reader.readAsDataURL(file);
 }
+function deleteImg(e,n){e.stopPropagation();if(!confirm('Remove this photo?'))return;ownerRef.update({['img'+n]:''}).then(()=>renderSlot(n,''));}
 
-function deleteImg(e, n) {
-  e.stopPropagation();
-  if(!confirm('Remove this photo?')) return;
-  ownerRef.update({['img'+n]:''}).then(()=>{ renderSlot(n,''); });
-}
-
-// ── MODAL (switch/confirm) ───────────────
-function openModal(){ G('switch-modal').classList.add('show'); }
-function closeModal(){ G('switch-modal').classList.remove('show'); }
+// ── MODAL
+function openModal(){G('switch-modal').classList.add('show');}
+function closeModal(){G('switch-modal').classList.remove('show');}
 function confirmSwitch(){
   closeModal();
-  // If owner, log out session first
-  if(ownerKey){ if(ownerRef){ownerRef.off();ownerRef=null;} ownerKey=null; localStorage.removeItem('ownerPhone'); }
+  if(ownerKey){stopGeoWatch();if(ownerRef){ownerRef.off();ownerRef=null;}ownerKey=null;localStorage.removeItem('ownerPhone');}
   showPage('s-land');
 }
-G('switch-modal').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+G('switch-modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
 
-// ── PROFILE ──────────────────────────────
+// ── PROFILE
 function openProfile(){
-  // Load saved values
-  G('p-name').value     = localStorage.getItem('profileName')    || '';
-  G('p-phone').value    = localStorage.getItem('profilePhone')   || (()=>{ const p=localStorage.getItem('userPhone'); return p?'0'+p.slice(2):''; })();
-  G('p-location').value = localStorage.getItem('profileLocation')|| '';
-  G('p-ok').style.display='none';
-  G('s-profile-panel').style.display='block';
-  window.scrollTo(0,0);
+  G('p-name').value=localStorage.getItem('profileName')||'';
+  G('p-phone').value=localStorage.getItem('profilePhone')||(()=>{const p=localStorage.getItem('userPhone');return p?'0'+p.slice(2):'';})();
+  G('p-location').value=localStorage.getItem('profileLocation')||'';
+  G('p-ok').style.display='none';G('s-profile-panel').style.display='block';window.scrollTo(0,0);
 }
 function closeProfile(){
   G('s-profile-panel').style.display='none';
-  // Restore All tab active state
   document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('on'));
   document.querySelector('.bn-item:first-child').classList.add('on');
 }
 function saveProfile(){
-  const name     = G('p-name').value.trim();
-  const phone    = G('p-phone').value.trim();
-  const location = G('p-location').value.trim();
-  localStorage.setItem('profileName',     name);
-  localStorage.setItem('profileLocation', location);
-  if(phone){
-    localStorage.setItem('profilePhone', phone);
-    if(/^03[0-9]{9}$/.test(phone)){
-      const key='92'+phone.slice(1);
-      localStorage.setItem('userPhone', key);
-      // Save customer info to Firebase under "activity" node
-      db.ref('activity/customers/'+key).set({
-        phone: key,
-        displayPhone: phone,
-        name:     name     || '',
-        location: location || '',
-        lastUpdated: new Date().toISOString()
-      });
-    }
-  }
-  refreshGreeting();
-  G('p-ok').style.display='block';
-  setTimeout(()=>G('p-ok').style.display='none', 2500);
+  const name=G('p-name').value.trim(),phone=G('p-phone').value.trim(),location=G('p-location').value.trim();
+  localStorage.setItem('profileName',name);localStorage.setItem('profileLocation',location);
+  if(phone){localStorage.setItem('profilePhone',phone);if(/^03[0-9]{9}$/.test(phone)){const key='92'+phone.slice(1);localStorage.setItem('userPhone',key);
+    db.ref('activity/customers/'+key).set({phone:key,displayPhone:phone,name:name||'',location:location||'',lastUpdated:new Date().toISOString()});}}
+  refreshGreeting();G('p-ok').style.display='block';setTimeout(()=>G('p-ok').style.display='none',2500);
 }
 
-// ── AUTO RESTORE OWNER SESSION ──────────
-// If owner previously logged in, skip landing and go straight to their shop
-(function() {
-  const saved = localStorage.getItem('ownerPhone');
-  if (saved) openOwnerView(saved);
-})();
-
-// ── NO AUTO-START (user/customer side) ───
-// Landing always shows first for customers.
+// ── AUTO RESTORE OWNER SESSION
+(function(){const saved=localStorage.getItem('ownerPhone');if(saved)openOwnerView(saved);})();
 </script>
 </body>
 </html>
