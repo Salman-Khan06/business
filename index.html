@@ -650,7 +650,7 @@ let geoShopLat     = null;
 let geoShopLng     = null;
 let geoAlertShown  = false;
 let geoSnoozedUntil = 0;
-const GEO_RADIUS   = 400; // metres threshold
+const GEO_RADIUS   = 50; // metres threshold
 
 function haversine(lat1, lng1, lat2, lng2) {
   const R = 6371000, r = d => d * Math.PI / 180;
