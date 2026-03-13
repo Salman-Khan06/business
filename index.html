@@ -141,7 +141,7 @@ html[data-theme="light"] .header{box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .ct-count{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);border-radius:10px;padding:1px 5px;display:none}
 html[data-theme="light"] .cat-tab.on .ct-count{background:rgba(0,0,0,.12)}
 .cat-tab.on .ct-count{display:inline}
-.content{padding:16px 16px 90px;position:relative;z-index:1}
+.content{padding:16px 16px 80px;position:relative;z-index:1}
 .stats-bar{display:flex;gap:10px;margin-bottom:16px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
 .stats-bar::-webkit-scrollbar{display:none}
 .stat-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--b1);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
@@ -171,8 +171,8 @@ html[data-theme="light"] .cat-tab.on .ct-count{background:rgba(0,0,0,.12)}
 .sc-img-empty{width:100%;height:100%;min-height:84px;display:flex;align-items:center;justify-content:center;font-size:26px}
 .sc-body{flex:1;padding:12px 13px;min-width:0;display:flex;flex-direction:column;justify-content:space-between}
 .sc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:4px}
-.sc-name{font-size:15px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
-.status-dot{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700;white-space:nowrap;flex-shrink:0}
+.sc-name{font-size:17px;font-weight:700;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.status-dot{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;flex-shrink:0}
 .s-open{background:var(--gg);color:var(--green);border:1px solid rgba(5,214,122,.25)}
 .s-closed{background:var(--rg);color:var(--red);border:1px solid rgba(240,65,90,.25)}
 .s-unknown{background:var(--card2);color:var(--muted2);border:1px solid var(--b1)}
@@ -273,7 +273,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
 .ov-btn:active{transform:scale(.96)}
 
 /* sync bar */
-.sync{position:fixed;bottom:0;left:0;right:0;z-index:200;padding:7px 14px;font-family:var(--mono);font-size:10px;display:none;align-items:center;gap:7px;background:var(--card);border-top:1px solid var(--b2)}
+.sync{position:fixed;bottom:56px;left:0;right:0;z-index:59;padding:5px 14px;font-family:var(--mono);font-size:10px;display:none;align-items:center;gap:7px;background:var(--card2);border-top:1px solid var(--b2)}
 .sync.show{display:flex}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:var(--muted);flex-shrink:0;transition:all .3s}
 .sync.ok .sync-dot{background:var(--green);box-shadow:0 0 6px var(--green)}
@@ -615,11 +615,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     </div>
   </div>
   <div class="content">
-    <div class="stats-bar">
-      <div class="stat-chip g"><span class="sc-n" id="st-open">—</span> Open Now</div>
-      <div class="stat-chip r"><span class="sc-n" id="st-closed">—</span> Closed</div>
-      <div class="stat-chip b"><span class="sc-n" id="st-total">—</span> Total</div>
-    </div>
+
     <div class="search-wrap">
       <div class="search-ico">🔍</div>
       <input class="search-inp" id="search-inp" placeholder="Search shop name, owner, area…" oninput="onSearch(this.value)">
@@ -713,11 +709,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-<!-- Sync bar -->
-<div class="sync" id="sync-bar">
-  <div class="sync-dot"></div>
-  <span class="sync-msg" id="sync-msg">Connecting…</span>
-</div>
+
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
@@ -775,23 +767,11 @@ function showPage(id) {
   target.classList.add('on');
   window.scrollTo(0, 0);
   // Show sync bar only on app pages
-  G('sync-bar').className = (id === 's-app' || id === 's-detail')
-    ? G('sync-bar').className.includes('ok') ? 'sync show ok' : 'sync show'
-    : 'sync';
+
   // Show switch button on all pages EXCEPT landing
   const hideSwitchOn = ['s-land'];
   G('switch-btn').style.display = hideSwitchOn.includes(id) ? 'none' : 'flex';
 }
-
-// ── FIREBASE SYNC STATUS ──────────────────
-function syncSt(state, msg) {
-  const bar = G('sync-bar');
-  const showing = bar.classList.contains('show');
-  bar.className = 'sync' + (showing ? ' show' : '') + ' ' + state;
-  G('sync-msg').textContent = msg;
-}
-db.ref('.info/connected').on('value', s =>
-  s.val() ? syncSt('ok','Firebase connected ✓') : syncSt('err','Offline — check internet'));
 
 // ── GO FIND SHOPS (skip phone page if already saved) ──
 function goFindShops() {
@@ -820,13 +800,12 @@ G('ob-continue').addEventListener('click', () => {
   if (phone) {
     const key = '92' + phone.slice(1);
     localStorage.setItem('userPhone', key);
-    // Save user phone to Firebase under "users" node
-    db.ref('users/' + key).set({
+    // Save to Firebase under activity/customers
+    db.ref('activity/customers/' + key).set({
       phone: key,
       displayPhone: phone,
       firstVisit: new Date().toISOString(),
-      lastVisit: new Date().toISOString(),
-      type: 'customer'
+      lastVisit:  new Date().toISOString(),
     });
   }
   enterApp();
@@ -873,9 +852,6 @@ function updateCounts() {
   const shops = Object.values(allShops);
   const openN = shops.filter(s => s.status === 'Open').length;
   G('h-open-count').textContent = openN;
-  G('st-open').textContent   = openN;
-  G('st-closed').textContent = shops.filter(s => s.status === 'Closed').length;
-  G('st-total').textContent  = shops.length;
   const cats = {ALL:shops.length,GR:0,MD:0,FD:0,EL:0,CL:0,HW:0,BK:0,OT:0};
   shops.forEach(s => { if (cats[s.cat] !== undefined) cats[s.cat]++; });
   Object.entries(cats).forEach(([k,v]) => { const el=G('cnt-'+k); if(el) el.textContent=v; });
@@ -1345,7 +1321,14 @@ function saveProfile(){
     if(/^03[0-9]{9}$/.test(phone)){
       const key='92'+phone.slice(1);
       localStorage.setItem('userPhone', key);
-      db.ref('users/'+key).set({ phone:key, displayPhone:phone, name, location, lastVisit:new Date().toISOString() });
+      // Save customer info to Firebase under "activity" node
+      db.ref('activity/customers/'+key).set({
+        phone: key,
+        displayPhone: phone,
+        name:     name     || '',
+        location: location || '',
+        lastUpdated: new Date().toISOString()
+      });
     }
   }
   refreshGreeting();
