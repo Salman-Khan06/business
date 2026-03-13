@@ -32,7 +32,7 @@ html[data-theme="light"]{
   --orange:#ea6b0a;
 }
 
-html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;transition:background .25s,color .25s}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:var(--font);-webkit-font-smoothing:antialiased;transition:background .25s,color .25s;overscroll-behavior:none}
 body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E")}
 html[data-theme="light"] body::after{display:none}
 
@@ -120,8 +120,8 @@ html[data-theme="light"] .cc-reg:hover{border-color:rgba(37,99,235,.5)}
 .rs-txt{font-size:13px;color:var(--muted2);line-height:1.4}
 
 /* ══ PAGE 3 — MAIN APP ══ */
-#s-app{min-height:100vh;background:var(--bg)}
-.header{background:var(--card);border-bottom:1px solid var(--b1);padding:14px 18px 0;position:sticky;top:0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.2)}
+#s-app{height:100vh;height:100dvh;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+.header{background:var(--card);border-bottom:1px solid var(--b1);padding:14px 18px 0;z-index:50;box-shadow:0 2px 16px rgba(0,0,0,.2);flex-shrink:0}
 html[data-theme="light"] .header{box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
 .h-logo{display:flex;align-items:center;gap:8px}
@@ -141,7 +141,7 @@ html[data-theme="light"] .header{box-shadow:0 2px 8px rgba(0,0,0,.07)}
 .ct-count{font-family:var(--mono);font-size:10px;background:rgba(255,255,255,.15);border-radius:10px;padding:1px 5px;display:none}
 html[data-theme="light"] .cat-tab.on .ct-count{background:rgba(0,0,0,.12)}
 .cat-tab.on .ct-count{display:inline}
-.content{padding:16px 16px 80px;position:relative;z-index:1}
+.content{padding:16px 16px 16px;position:relative;z-index:1;flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .stats-bar{display:flex;gap:10px;margin-bottom:16px;overflow-x:auto;-ms-overflow-style:none;scrollbar-width:none}
 .stats-bar::-webkit-scrollbar{display:none}
 .stat-chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--b1);border-radius:12px;padding:8px 12px;font-size:12px;font-weight:600;white-space:nowrap;flex-shrink:0}
@@ -190,7 +190,7 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 .empty-sub{font-size:13px;line-height:1.5}
 .skeleton{background:linear-gradient(90deg,var(--card2) 25%,var(--card) 50%,var(--card2) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;border-radius:12px;height:84px;margin-bottom:10px}
 @keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
-.bnav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:var(--card);border-top:1px solid var(--b2);padding:8px 0 max(8px,env(safe-area-inset-bottom));display:flex;box-shadow:0 -4px 20px rgba(0,0,0,.2)}
+.bnav{flex-shrink:0;background:var(--card);border-top:1px solid var(--b2);padding:8px 0 max(8px,env(safe-area-inset-bottom));display:flex;box-shadow:0 -4px 16px rgba(0,0,0,.2);z-index:50}
 .bn-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;padding:4px;font-size:10px;font-weight:600;color:var(--muted2);border:none;background:none;font-family:var(--font);transition:color .2s}
 .bn-item:hover{color:var(--text)}
 .bn-item.on{color:var(--orange)}
@@ -204,7 +204,7 @@ html[data-theme="light"] .s-closed{background:rgba(214,60,82,.1);color:var(--red
 .det-header-info{flex:1;min-width:0}
 .det-header-name{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .det-header-sub{font-size:11px;color:var(--muted2)}
-.det-body{padding:16px 16px 80px}
+.det-body{padding:16px 16px 90px}
 .det-images{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;border-radius:16px;overflow:hidden}
 .det-img{aspect-ratio:1;background:var(--card2);overflow:hidden}
 .det-img img{width:100%;height:100%;object-fit:cover}
