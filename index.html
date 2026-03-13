@@ -283,7 +283,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
         <div class="ttl">Apki Dukaan,<br>Hamesha Live 🛒</div>
         <div class="sub">Real-time status of local shops. Know before you go — or manage your own shop.</div>
         <div class="choice-grid">
-          <div class="choice-card cc-find" onclick="showPage('s-phone')">
+          <div class="choice-card cc-find" onclick="goFindShops()">
             <div class="cc-ico">🔍</div>
             <div class="cc-lbl">Find Shops</div>
             <div class="cc-sub">Check if a shop is open right now</div>
@@ -416,7 +416,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
         <div class="fld"><label>Description (Optional)</label><textarea id="r-desc" rows="2" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
         <div class="err" id="r-err">⚠️ Please fill all required fields.</div>
         <div class="err" id="r-phone-err">⚠️ Enter a valid number (03XXXXXXXXX).</div>
-        <div class="err" id="r-dup-err">⚠️ This number is already registered. Use Login instead.</div>
+        <div class="err" id="r-dup-err">⚠️ Number already registered — use "Already Registered" login instead.</div>
         <div class="ok-msg" id="r-ok">✅ Shop registered successfully!</div>
         <button class="bp orange" id="r-btn">Register My Shop →</button>
         <button class="bg" onclick="showPage('s-register')">← Back</button>
@@ -708,6 +708,15 @@ function syncSt(state, msg) {
 db.ref('.info/connected').on('value', s =>
   s.val() ? syncSt('ok','Firebase connected ✓') : syncSt('err','Offline — check internet'));
 
+// ── GO FIND SHOPS (skip phone page if already saved) ──
+function goFindShops() {
+  if (localStorage.getItem('userPhone')) {
+    enterApp(); // already have their number, go straight in
+  } else {
+    showPage('s-phone');
+  }
+}
+
 // ── GO MY SHOP (checks saved session first) ──
 function goMyShop() {
   const saved = localStorage.getItem('ownerPhone');
@@ -919,6 +928,47 @@ function setTab(tab,el){
   }
 }
 
+// ── GO FIND SHOPS ────────────────────────
+// If user already gave their number before, skip phone page
+function goFindShops() {
+  if (localStorage.getItem('userPhone')) {
+    enterApp();
+  } else {
+    showPage('s-phone');
+  }
+}
+
+// ── GO MY SHOP ───────────────────────────
+// If owner already logged in, skip straight to shop view
+function goMyShop() {
+  const saved = localStorage.getItem('ownerPhone');
+  if (saved) {
+    openOwnerView(saved);
+  } else {
+    showPage('s-register');
+  }
+}
+
+// ── PHONE PAGE (user side) ───────────────
+G('ob-continue').addEventListener('click', () => {
+  const phone = G('ob-phone').value.trim();
+  if (phone && !/^03[0-9]{9}$/.test(phone)) { G('ob-err').style.display='block'; return; }
+  G('ob-err').style.display = 'none';
+  if (phone) {
+    const key = '92' + phone.slice(1);
+    localStorage.setItem('userPhone', key);
+    // Save user phone to Firebase under users node
+    db.ref('users/' + key).set({
+      phone: key,
+      displayPhone: phone,
+      lastVisit: new Date().toISOString()
+    });
+  }
+  enterApp();
+});
+G('ob-skip').addEventListener('click', enterApp);
+G('ob-phone').addEventListener('keydown', e => { if (e.key === 'Enter') G('ob-continue').click(); });
+
 // ── OWNER: REGISTER ─────────────────────
 function normPhone(p){
   p=p.replace(/\D/g,'');
@@ -949,7 +999,11 @@ G('r-btn').addEventListener('click', async () => {
   G('r-btn').disabled=true; G('r-btn').textContent='Checking…';
 
   const snap = await db.ref('shops/'+key).once('value');
-  if (snap.val()){ G('r-dup-err').style.display='block'; G('r-btn').disabled=false; G('r-btn').textContent='Register My Shop →'; return; }
+  if (snap.val()){
+    G('r-dup-err').style.display='block';
+    G('r-btn').disabled=false; G('r-btn').textContent='Register My Shop →';
+    return;
+  }
 
   G('r-btn').textContent='Registering…';
   const now = new Date().toISOString();
@@ -1040,10 +1094,6 @@ function ownerSetStatus(status) {
       closeTime: status==='Closed' ? t : (cur.closeTime ||'--:--'),
     });
   }).then(() => {
-    db.ref('activity').push({
-      type: status==='Open' ? 'status_open' : 'status_closed',
-      phone: ownerKey, timestamp: new Date().toISOString()
-    });
   }).catch(e => alert('Error: '+e.message));
 }
 
@@ -1152,6 +1202,7 @@ function handleFile(e) {
   };
   reader.readAsDataURL(file);
 }
+
 function deleteImg(e, n) {
   e.stopPropagation();
   if(!confirm('Remove this photo?')) return;
