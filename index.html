@@ -453,6 +453,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
         <div class="fld"><label>Area / Mohalla</label><input type="text" id="r-area" placeholder="e.g. Raja Bazaar" maxlength="60"></div>
         <div class="fld"><label>City</label><input type="text" id="r-city" placeholder="e.g. Rawalpindi" maxlength="30"></div>
         <div class="fld"><label>Description (Optional)</label><textarea id="r-desc" rows="2" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
+        <div class="fld"><label>🏷️ Discount / Offer (Optional)</label><input type="text" id="r-discount" placeholder="e.g. 10% off on Fridays, Free delivery above Rs.500" maxlength="150"></div>
         <div class="err" id="r-err">⚠️ Please fill all required fields.</div>
         <div class="err" id="r-phone-err">⚠️ Enter a valid number (03XXXXXXXXX).</div>
         <div class="err" id="r-dup-err">⚠️ Number already registered — use "Already Registered" login instead.</div>
@@ -511,6 +512,10 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
       <div class="irow"><div class="irow-ico">📍</div><div class="irow-body"><div class="irow-label">Area</div><div class="irow-val" id="ov-area">—</div></div></div>
       <div class="irow"><div class="irow-ico">🏙️</div><div class="irow-body"><div class="irow-label">City</div><div class="irow-val" id="ov-city">—</div></div></div>
     </div>
+    <div id="ov-discount-row" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(240,122,47,0.10);border:1px solid rgba(240,122,47,0.25);border-radius:12px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:4px">🏷️ Active Discount</div>
+      <div id="ov-discount-txt" style="font-size:13px;font-weight:600;color:var(--text)">—</div>
+    </div>
     <div style="font-size:11px;color:var(--muted2);text-align:center;padding:10px;background:var(--card2);border-radius:10px;border:1px solid var(--b1)">
       Last sync: <span id="ov-lastsync" style="font-family:var(--mono)">--</span>
     </div>
@@ -548,6 +553,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
         <div class="fld"><label>Area / Mohalla</label><input type="text" id="e-area" maxlength="60"></div>
         <div class="fld"><label>City</label><input type="text" id="e-city" maxlength="30"></div>
         <div class="fld"><label>Description</label><textarea id="e-desc" rows="3" maxlength="200" placeholder="Tell customers about your shop…"></textarea></div>
+        <div class="fld"><label>🏷️ Discount / Offer (Optional)</label><input type="text" id="e-discount" placeholder="e.g. 10% off on Fridays, Free delivery above Rs.500" maxlength="150"></div>
         <!-- IMAGE UPLOAD -->
         <div style="font-size:10px;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;margin-top:4px">Shop Photos (Max 2)</div>
         <div class="img-grid">
@@ -586,7 +592,10 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     <div class="header-top">
       <div class="h-logo">
         <div class="h-logo-ico">🏪</div>
-        <div class="h-logo-txt">ShopStatus</div>
+        <div>
+          <div class="h-logo-txt">ShopStatus</div>
+          <div id="h-greeting" style="font-size:11px;color:var(--muted2);font-weight:500;margin-top:1px;display:none">👋 Hi, <span id="h-username"></span></div>
+        </div>
       </div>
       <div class="h-right">
         <div class="live-pill"><div class="ldot"></div><span id="h-open-count">—</span> Open</div>
@@ -675,6 +684,10 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
       <div class="det-desc-lbl">About this shop</div>
       <div id="d-desc-text"></div>
     </div>
+    <div id="det-discount" style="display:none;margin-bottom:12px;padding:12px 14px;background:rgba(240,122,47,0.10);border:1px solid rgba(240,122,47,0.25);border-radius:12px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--orange);margin-bottom:4px">🏷️ Discount / Offer</div>
+      <div id="d-discount-text" style="font-size:13px;font-weight:600;color:var(--text)"></div>
+    </div>
     <button class="dir-btn" id="det-dir">📍 &nbsp;Get Directions</button>
   </div>
 </div>
@@ -734,6 +747,17 @@ function applyTheme(t) {
   G('h-theme-btn').textContent = dark ? '🌙' : '☀️';
   localStorage.setItem('theme', t);
 }
+function refreshGreeting() {
+  const name = localStorage.getItem('profileName') || '';
+  const el = document.getElementById('h-greeting');
+  if (name) {
+    document.getElementById('h-username').textContent = name;
+    el.style.display = 'block';
+  } else {
+    el.style.display = 'none';
+  }
+}
+
 function toggleTheme() {
   applyTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
 }
@@ -812,6 +836,7 @@ G('ob-phone').addEventListener('keydown', e => { if (e.key === 'Enter') G('ob-co
 
 // ── ENTER APP ─────────────────────────────
 function enterApp() {
+  refreshGreeting();
   showPage('s-app');
   if (appStarted) return;
   appStarted = true;
@@ -908,6 +933,7 @@ function cardHTML(key, s) {
         <div>
           <div class="sc-top"><div class="sc-name">${s.name||'—'}</div><div>${badge}</div></div>
           <div class="sc-owner">👤 ${s.owner||'—'}</div>
+          ${s.discount?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,122,47,0.12);border:1px solid rgba(240,122,47,0.28);border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--orange);margin-top:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏷️ ${s.discount}</div>`:''}
         </div>
         <div class="sc-foot">
           <div class="sc-area">📍 ${s.area||'—'}${s.city?', '+s.city:''}</div>
@@ -938,6 +964,8 @@ function openDetail(key) {
   G('d-area').textContent =s.area||'—'; G('d-city').textContent=s.city||'—';
   if(s.desc){G('det-desc').style.display='block';G('d-desc-text').textContent=s.desc;}
   else G('det-desc').style.display='none';
+  if(s.discount){G('det-discount').style.display='block';G('d-discount-text').textContent=s.discount;}
+  else G('det-discount').style.display='none';
   G('det-dir').onclick=()=>window.open('https://www.google.com/maps/search/'+encodeURIComponent((s.name||'shop')+' '+(s.area||'')+' '+(s.city||'')),'_blank');
   applyStatus(s);
   showPage('s-detail');
@@ -986,10 +1014,9 @@ function setTab(tab,el){
     activeCat='ALL'; searchQ=''; G('search-inp').value='';
     document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('on'));
     document.querySelector('.cat-tab[data-cat="ALL"]').classList.add('on');
-    // Show shops that have a description (used as discount indicator) — or show all with a note
-    const all=Object.entries(allShops).filter(([,s])=>s.desc&&s.desc.trim().length>0);
+    const all=Object.entries(allShops).filter(([,s])=>s.discount&&s.discount.trim().length>0);
     G('open-label').textContent=`Shops with Offers (${all.length})`;
-    G('open-list').innerHTML=all.length?all.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">🏷️</div><div class="empty-title">No discount offers yet</div><div class="empty-sub">Shopkeepers can add offers in their description</div></div>';
+    G('open-list').innerHTML=all.length?all.map(([k,s])=>cardHTML(k,s)).join(''):'<div class="empty-state"><div class="empty-ico">🏷️</div><div class="empty-title">No discount offers yet</div><div class="empty-sub">Shopkeepers can add their offers from My Shop → Edit</div></div>';
     G('closed-section').style.display='none';
   } else if(tab==='profile'){
     openProfile();
@@ -1077,7 +1104,7 @@ G('r-btn').addEventListener('click', async () => {
   const now = new Date().toISOString();
   await db.ref('shops/'+key).set({
     name, owner, phone:key, displayPhone:phone,
-    cat, area, city, desc:desc||'',
+    cat, area, city, desc:desc||'', discount:G('r-discount').value.trim()||'',
     status:'unknown', openTime:'--:--', closeTime:'--:--',
     lastUpdated:'--', registeredAt:now, img1:'', img2:'',
   });
@@ -1124,6 +1151,7 @@ function openOwnerView(key) {
     G('ov-cat').textContent   = (ICONS[d.cat]||'')+' '+(CATS[d.cat]||d.cat||'—');
     G('ov-area').textContent  = d.area||'—';
     G('ov-city').textContent  = d.city||'—';
+    if(d.discount){ G('ov-discount-txt').textContent=d.discount; G('ov-discount-row').style.display='block'; } else { G('ov-discount-row').style.display='none'; }
     G('ov-open').textContent  = d.openTime||'--:--';
     G('ov-close').textContent = d.closeTime||'--:--';
     G('ov-lastsync').textContent = d.lastUpdated||'--';
@@ -1185,7 +1213,8 @@ function openEditPage() {
     document.getElementById('e-cat').value   = d.cat   ||'GR';
     document.getElementById('e-area').value  = d.area  ||'';
     document.getElementById('e-city').value  = d.city  ||'';
-    document.getElementById('e-desc').value  = d.desc  ||'';
+    document.getElementById('e-desc').value     = d.desc     ||'';
+    document.getElementById('e-discount').value = d.discount ||'';
     renderSlot(1, d.img1||'');
     renderSlot(2, d.img2||'');
     document.getElementById('e-err').style.display='none';
@@ -1222,7 +1251,8 @@ document.getElementById('e-save-btn').addEventListener('click', async () => {
       cat:  document.getElementById('e-cat').value,
       area: document.getElementById('e-area').value.trim(),
       city: document.getElementById('e-city').value.trim(),
-      desc: document.getElementById('e-desc').value.trim(),
+      desc:     document.getElementById('e-desc').value.trim(),
+      discount: document.getElementById('e-discount').value.trim(),
     });
     document.getElementById('e-ok').style.display='block';
     setTimeout(()=>{ document.getElementById('e-ok').style.display='none'; }, 2500);
@@ -1318,6 +1348,7 @@ function saveProfile(){
       db.ref('users/'+key).set({ phone:key, displayPhone:phone, name, location, lastVisit:new Date().toISOString() });
     }
   }
+  refreshGreeting();
   G('p-ok').style.display='block';
   setTimeout(()=>G('p-ok').style.display='none', 2500);
 }
