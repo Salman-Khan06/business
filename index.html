@@ -289,7 +289,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
             <div class="cc-sub">Check if a shop is open right now</div>
             <div class="cc-arrow-g">Browse →</div>
           </div>
-          <div class="choice-card cc-reg" onclick="showPage('s-register')">
+          <div class="choice-card cc-reg" onclick="goMyShop()">
             <div class="cc-ico">🏪</div>
             <div class="cc-lbl">My Shop</div>
             <div class="cc-sub">Owner? Register &amp; manage your dukaan</div>
@@ -707,6 +707,16 @@ function syncSt(state, msg) {
 }
 db.ref('.info/connected').on('value', s =>
   s.val() ? syncSt('ok','Firebase connected ✓') : syncSt('err','Offline — check internet'));
+
+// ── GO MY SHOP (checks saved session first) ──
+function goMyShop() {
+  const saved = localStorage.getItem('ownerPhone');
+  if (saved) {
+    openOwnerView(saved);  // already logged in — go straight to shop
+  } else {
+    showPage('s-register'); // not logged in — show register/login options
+  }
+}
 
 // ── PHONE PAGE (user side) ───────────────
 G('ob-continue').addEventListener('click', () => {
