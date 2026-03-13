@@ -75,10 +75,9 @@ html[data-theme="light"] .bp.green{color:#fff}
 .ok-msg{font-size:12px;color:var(--green);margin-top:6px;padding:8px 11px;background:var(--gg);border-radius:8px;border:1px solid rgba(5,214,122,.2);display:none}
 
 /* ══ SWITCH BUTTON (top right corner) ══ */
-.switch-btn{position:fixed;top:62px;right:14px;z-index:999;display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--b2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted2);font-family:var(--font);box-shadow:0 2px 12px rgba(0,0,0,.2);transition:all .2s}
+.switch-btn{display:none;align-items:center;gap:6px;background:var(--card2);border:1px solid var(--b2);border-radius:20px;padding:6px 12px 6px 8px;cursor:pointer;font-size:11px;font-weight:700;color:var(--muted2);font-family:var(--font);transition:all .2s}
 .switch-btn:hover{border-color:var(--blue);color:var(--text)}
 .switch-btn .sw-ico{font-size:14px}
-html[data-theme="light"] .switch-btn{box-shadow:0 2px 8px rgba(0,0,0,.08)}
 
 /* ══ CONFIRM MODAL ══ */
 .modal-overlay{position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s}
@@ -296,11 +295,6 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
   </div>
 </div>
 
-<!-- FLOATING SWITCH BUTTON — shown on app & owner pages -->
-<div class="switch-btn" id="switch-btn" style="display:none" onclick="openModal()">
-  <span class="sw-ico">⇄</span> Switch
-</div>
-
 <!-- ══════════════════════
      PAGE 1 — LANDING
      Always shown first.
@@ -477,6 +471,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
     </div>
     <div style="display:flex;align-items:center;gap:6px">
       <div id="ov-badge"></div>
+      <div class="switch-btn" style="display:flex" onclick="openModal()"><span class="sw-ico">⇄</span> Switch</div>
       <div class="icon-btn" onclick="openEditPage()" title="Edit Info">✏️</div>
     </div>
   </div>
@@ -599,6 +594,7 @@ html[data-theme="light"] .bc.a{background:rgba(214,60,82,.1);border-color:rgba(2
       </div>
       <div class="h-right">
         <div class="live-pill"><div class="ldot"></div><span id="h-open-count">—</span> Open</div>
+        <div class="switch-btn" id="switch-btn" onclick="openModal()"><span class="sw-ico">⇄</span> Switch</div>
         <div class="icon-btn" onclick="toggleTheme()" id="h-theme-btn">🌙</div>
       </div>
     </div>
@@ -768,9 +764,9 @@ function showPage(id) {
   window.scrollTo(0, 0);
   // Show sync bar only on app pages
 
-  // Show switch button on all pages EXCEPT landing
-  const hideSwitchOn = ['s-land'];
-  G('switch-btn').style.display = hideSwitchOn.includes(id) ? 'none' : 'flex';
+  // Switch button lives in app header — only visible on s-app page
+  const showSwitchOn = ['s-app'];
+  G('switch-btn').style.display = showSwitchOn.includes(id) ? 'flex' : 'none';
 }
 
 // ── GO FIND SHOPS (skip phone page if already saved) ──
