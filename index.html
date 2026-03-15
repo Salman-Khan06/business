@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="ShopStatus — Real-time shop status checker. Know if shops near you are open or closed before you go.">
 <meta name="theme-color" content="#f07a2f">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -892,7 +892,7 @@ function cardHTML(key,s){
   const isOpen=s.status==='Open',isClosed=s.status==='Closed',icon=ICONS[s.cat]||'🏪';
   const badge=isOpen?`<span class="status-dot s-open">● Open</span>`:isClosed?`<span class="status-dot s-closed">● Closed</span>`:`<span class="status-dot s-unknown">● Unknown</span>`;
   const timeStr=isOpen&&s.openTime&&s.openTime!=='--:--'?`Since ${esc(s.openTime)}`:isClosed&&s.closeTime&&s.closeTime!=='--:--'?`Closed ${esc(s.closeTime)}`:'No update today';
-  const safeKey=esc(key);
+  const safeKey=key.replace(/[^a-zA-Z0-9_-]/g,'');
   const imgHTML=s.img1?`<img src="${esc(s.img1)}" alt="" loading="lazy">`:`<div class="sc-img-empty">${icon}</div>`;
   return `<div class="shop-card${!isOpen?' offline':''}" onclick="openDetail('${safeKey}')"><div class="sc-strip"></div><div class="sc-inner"><div class="sc-img">${imgHTML}</div><div class="sc-body"><div><div class="sc-top"><div class="sc-name">${esc(s.name)||'—'}</div><div>${badge}</div></div><div class="sc-owner">👤 ${esc(s.owner)||'—'}</div>${s.discount?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,122,47,0.12);border:1px solid rgba(240,122,47,0.28);border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--orange);margin-top:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏷️ ${esc(s.discount)}</div>`:''}</div><div class="sc-foot"><div class="sc-area">📍 ${esc(s.area)||'—'}${s.city?', '+esc(s.city):''}</div><div class="sc-time ${isOpen?'open-time':isClosed?'closed-time':''}">${timeStr}</div></div></div></div></div>`;
 }
