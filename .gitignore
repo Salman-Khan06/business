@@ -1,6 +1,6 @@
-/background.js
-/icon-192.png
-/icon-512.png
-/manifest.json
-/shopstatusadmin.html
-/user.html
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+.env
+.env.local
