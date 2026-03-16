@@ -1,4 +1,4 @@
-const CACHE_NAME = 'salman-pwa-v3'; // Change v2 to v3
+const CACHE_NAME = 'shopstatus-pwa-v4';
 const urlsToCache = [
   './index.html',
   './manifest.json',
@@ -18,21 +18,33 @@ self.addEventListener('install', (event) => {
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
-      // If we have it in the 'shelf' (cache), return it. 
-      // Otherwise, go to the internet.
-      return response || fetch(event.request);
+      if (response) return response;
+      return fetch(event.request).then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && (networkResponse.type === 'basic' || networkResponse.type === 'cors')) {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      });
     }).catch(() => {
-      // If the user is offline and the file isn't cached
-      return new Response("You are offline. Please connect to update shop status.");
+      if (event.request.mode === 'navigate') {
+        return caches.match('./index.html');
+      }
+      return new Response("You are offline. Please connect to update shop status.",
+        { headers: { 'Content-Type': 'text/plain' } });
     })
   );
 });
 
-// After generating the code, immediately create entry in Firebase
-window.__fbSet(window.__fbRef('shops/' + code), {
-  status: 'unknown',
-  registeredAt: new Date().toISOString(),
-  openTime: '--:--',
-  closeTime: '--:--',
-  lastUpdated: '--'
+self.addEventListener('activate', (event) => {
+  event.waitUntil(
+    caches.keys().then((cacheNames) => {
+      return Promise.all(
+        cacheNames.filter((name) => name !== CACHE_NAME)
+          .map((name) => caches.delete(name))
+      );
+    })
+  );
 });

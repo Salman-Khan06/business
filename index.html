@@ -3,6 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="ShopStatus — Real-time shop status checker. Know if shops near you are open or closed before you go.">
+<meta name="theme-color" content="#f07a2f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ShopStatus">
+<meta property="og:title" content="ShopStatus — Find Open Shops Near You">
+<meta property="og:description" content="Real-time shop status checker. Know before you go — or manage your own shop with one tap.">
+<meta property="og:type" content="website">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>ShopStatus — Find Open Shops</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -642,6 +653,38 @@ const CATS  = {GR:'Grocery / General',MD:'Medical / Pharmacy',FD:'Food / Dhaba',
 
 let allShops = {}, activeCat = 'ALL', searchQ = '', detailRef = null, appStarted = false;
 
+// ══ XSS SANITIZATION ═══════════════════════════════
+function esc(str) {
+  if (!str) return '';
+  const div = document.createElement('div');
+  div.appendChild(document.createTextNode(str));
+  return div.innerHTML;
+}
+
+// ══ RATE LIMITER ════════════════════════════════════
+const _rateLimits = {};
+function rateLimit(action, cooldownMs) {
+  const now = Date.now(), last = _rateLimits[action] || 0;
+  if (now - last < cooldownMs) return false;
+  _rateLimits[action] = now;
+  return true;
+}
+
+// ══ INPUT SANITIZER ═════════════════════════════════
+function sanitizeInput(str, maxLen) {
+  if (!str) return '';
+  return str.replace(/[<>"'`]/g, '').trim().slice(0, maxLen || 200);
+}
+
+// ══ SERVICE WORKER REGISTRATION ═════════════════════
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./background.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.warn('SW registration failed:', err));
+  });
+}
+
 // ══════════════════════════════════════
 // GEO-FENCE SYSTEM
 // ══════════════════════════════════════
@@ -848,9 +891,10 @@ function renderList(){
 function cardHTML(key,s){
   const isOpen=s.status==='Open',isClosed=s.status==='Closed',icon=ICONS[s.cat]||'🏪';
   const badge=isOpen?`<span class="status-dot s-open">● Open</span>`:isClosed?`<span class="status-dot s-closed">● Closed</span>`:`<span class="status-dot s-unknown">● Unknown</span>`;
-  const timeStr=isOpen&&s.openTime&&s.openTime!=='--:--'?`Since ${s.openTime}`:isClosed&&s.closeTime&&s.closeTime!=='--:--'?`Closed ${s.closeTime}`:'No update today';
-  const imgHTML=s.img1?`<img src="${s.img1}" alt="" loading="lazy">`:`<div class="sc-img-empty">${icon}</div>`;
-  return `<div class="shop-card${!isOpen?' offline':''}" onclick="openDetail('${key}')"><div class="sc-strip"></div><div class="sc-inner"><div class="sc-img">${imgHTML}</div><div class="sc-body"><div><div class="sc-top"><div class="sc-name">${s.name||'—'}</div><div>${badge}</div></div><div class="sc-owner">👤 ${s.owner||'—'}</div>${s.discount?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,122,47,0.12);border:1px solid rgba(240,122,47,0.28);border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--orange);margin-top:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏷️ ${s.discount}</div>`:''}</div><div class="sc-foot"><div class="sc-area">📍 ${s.area||'—'}${s.city?', '+s.city:''}</div><div class="sc-time ${isOpen?'open-time':isClosed?'closed-time':''}">${timeStr}</div></div></div></div></div>`;
+  const timeStr=isOpen&&s.openTime&&s.openTime!=='--:--'?`Since ${esc(s.openTime)}`:isClosed&&s.closeTime&&s.closeTime!=='--:--'?`Closed ${esc(s.closeTime)}`:'No update today';
+  const safeKey=key.replace(/[^a-zA-Z0-9_-]/g,'');
+  const imgHTML=s.img1?`<img src="${esc(s.img1)}" alt="" loading="lazy">`:`<div class="sc-img-empty">${icon}</div>`;
+  return `<div class="shop-card${!isOpen?' offline':''}" onclick="openDetail('${safeKey}')"><div class="sc-strip"></div><div class="sc-inner"><div class="sc-img">${imgHTML}</div><div class="sc-body"><div><div class="sc-top"><div class="sc-name">${esc(s.name)||'—'}</div><div>${badge}</div></div><div class="sc-owner">👤 ${esc(s.owner)||'—'}</div>${s.discount?`<div style="display:inline-flex;align-items:center;gap:4px;background:rgba(240,122,47,0.12);border:1px solid rgba(240,122,47,0.28);border-radius:7px;padding:2px 7px;font-size:10px;font-weight:700;color:var(--orange);margin-top:3px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">🏷️ ${esc(s.discount)}</div>`:''}</div><div class="sc-foot"><div class="sc-area">📍 ${esc(s.area)||'—'}${s.city?', '+esc(s.city):''}</div><div class="sc-time ${isOpen?'open-time':isClosed?'closed-time':''}">${timeStr}</div></div></div></div></div>`;
 }
 
 // ── DETAIL
@@ -858,7 +902,7 @@ function openDetail(key){
   const s=allShops[key];if(!s)return;
   G('det-hname').textContent=s.name||'Shop';G('det-hsub').textContent=(CATS[s.cat]||'')+(s.area?' · '+s.area:'');
   const h1=!!s.img1,h2=!!s.img2;let ih='';
-  if(h1||h2){ih=`<div class="det-images${h1&&h2?'':' det-single'}">`;if(h1)ih+=`<div class="det-img"><img src="${s.img1}" loading="lazy"></div>`;if(h2)ih+=`<div class="det-img"><img src="${s.img2}" loading="lazy"></div>`;ih+=`</div>`;}
+  if(h1||h2){ih=`<div class="det-images${h1&&h2?'':' det-single'}">`;if(h1)ih+=`<div class="det-img"><img src="${esc(s.img1)}" loading="lazy"></div>`;if(h2)ih+=`<div class="det-img"><img src="${esc(s.img2)}" loading="lazy"></div>`;ih+=`</div>`;}
   else{ih=`<div class="det-images det-single" style="margin-bottom:16px"><div class="det-img" style="border-radius:16px"><div class="det-img-empty">${ICONS[s.cat]||'🏪'}<span>No photos yet</span></div></div></div>`;}
   G('det-images').innerHTML=ih;
   G('d-name').textContent=s.name||'—';G('d-owner').textContent=s.owner||'—';
@@ -909,8 +953,9 @@ function dispPhone(p){p=String(p);return p.startsWith('92')?'0'+p.slice(2):p;}
 
 // ── OWNER: REGISTER
 G('r-btn').addEventListener('click',async()=>{
-  const name=G('r-name').value.trim(),owner=G('r-owner').value.trim(),phone=G('r-phone').value.trim();
-  const cat=G('r-cat').value,area=G('r-area').value.trim(),city=G('r-city').value.trim(),desc=G('r-desc').value.trim();
+  if(!rateLimit('register',5000)){return;}
+  const name=sanitizeInput(G('r-name').value,50),owner=sanitizeInput(G('r-owner').value,40),phone=G('r-phone').value.trim();
+  const cat=G('r-cat').value,area=sanitizeInput(G('r-area').value,60),city=sanitizeInput(G('r-city').value,30),desc=sanitizeInput(G('r-desc').value,200);
   ['r-err','r-phone-err','r-dup-err','r-ok'].forEach(id=>G(id).style.display='none');
   if(!name||!owner||!phone||!cat||!area||!city){G('r-err').style.display='block';return;}
   if(!/^03[0-9]{9}$/.test(phone)){G('r-phone-err').style.display='block';return;}
@@ -921,7 +966,7 @@ G('r-btn').addEventListener('click',async()=>{
   G('r-btn').textContent='Registering…';
   await db.ref('shops/'+key).set({
     name,owner,phone:key,displayPhone:phone,cat,area,city,desc:desc||'',
-    discount:G('r-discount').value.trim()||'',
+    discount:sanitizeInput(G('r-discount').value,150)||'',
     status:'unknown',openTime:'--:--',closeTime:'--:--',
     lastUpdated:'--',registeredAt:new Date().toISOString(),img1:'',img2:'',
     lat:_capturedLat||null, lng:_capturedLng||null,  // ← GEO COORDINATES
@@ -986,6 +1031,7 @@ function openOwnerView(key){
 // ── OWNER: SET STATUS
 function ownerSetStatus(status){
   if(!ownerKey||!ownerRef)return;
+  if(!rateLimit('setStatus',2000)){return;}
   const t=new Date().toLocaleTimeString('en-PK',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
   ownerRef.once('value').then(snap=>{
     const cur=snap.val()||{};
@@ -1021,11 +1067,12 @@ function renderSlot(n,url){
   else slot.classList.remove('has-img');
 }
 G('e-save-btn').addEventListener('click',async()=>{
-  const name=G('e-name').value.trim(),owner=G('e-owner').value.trim();
+  const name=sanitizeInput(G('e-name').value,50),owner=sanitizeInput(G('e-owner').value,40);
   if(!name||!owner){G('e-err').style.display='block';return;}
+  if(!rateLimit('editSave',3000)){return;}
   G('e-err').style.display='none';G('e-save-btn').disabled=true;G('e-save-btn').textContent='Saving…';
   try{
-    const updates={name,owner,cat:G('e-cat').value,area:G('e-area').value.trim(),city:G('e-city').value.trim(),desc:G('e-desc').value.trim(),discount:G('e-discount').value.trim()};
+    const updates={name,owner,cat:G('e-cat').value,area:sanitizeInput(G('e-area').value,60),city:sanitizeInput(G('e-city').value,30),desc:sanitizeInput(G('e-desc').value,200),discount:sanitizeInput(G('e-discount').value,150)};
     if(_capturedLat!==null){updates.lat=_capturedLat;updates.lng=_capturedLng;}
     await ownerRef.update(updates);
     G('e-ok').style.display='block';setTimeout(()=>G('e-ok').style.display='none',2500);
